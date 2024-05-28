@@ -17,7 +17,7 @@ class SQLLoader
 {
     protected ?string $file = null;
 
-    protected Method $method = Method::INSERT;
+    protected Method $method = Method::APPEND;
 
     protected array $tables = [];
 
