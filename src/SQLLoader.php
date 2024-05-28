@@ -36,7 +36,7 @@ class SQLLoader
 
     protected ?string $discardFile = null;
 
-    protected bool $deleteFiles = false;
+    protected bool $deleteFiles = true;
 
     protected string $logs = '';
 
