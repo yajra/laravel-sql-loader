@@ -39,6 +39,8 @@ class SQLLoader
 
     protected bool $deleteFiles = false;
 
+    protected string $logs = '';
+
     public function __construct(
         protected array $options = []
     ) {
@@ -97,6 +99,8 @@ class SQLLoader
         $command = $this->buildCommand();
 
         $this->result = Process::command($command)->run();
+
+        $this->logs = file_get_contents($this->logPath) ?? '';
 
         if ($this->deleteFiles) {
             $this->deleteGeneratedFiles();
@@ -331,5 +335,10 @@ class SQLLoader
         if ($this->controlFile) {
             $filesystem->delete($this->controlFile);
         }
+    }
+
+    public function logs(): string
+    {
+        return $this->logs;
     }
 }
