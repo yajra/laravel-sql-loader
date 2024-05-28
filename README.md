@@ -60,7 +60,7 @@ Create a route to test the package.
 ```php
 Route::get('sql-loader', function () {
     Schema::dropIfExists('employees');
-    Schema::create('employees', function (OracleBlueprint $table) {
+    Schema::create('employees', function ($table) {
         $table->id();
         $table->string('name');
         $table->integer('dept_id');
@@ -80,7 +80,7 @@ Route::get('sql-loader', function () {
         return nl2br($loader->debug());
     }
 
-    return nl2br($loader->output());
+    return \Illuminate\Support\Facades\DB::table('employees')->get();
 });
 ```
 
