@@ -27,15 +27,15 @@ class SQLLoader
 
     public ?string $controlFile = null;
 
+    public ?string $badFile = null;
+
+    public ?string $discardFile = null;
+
     protected ?string $disk = null;
 
     protected ?string $logPath = null;
 
     protected ?ProcessResult $result = null;
-
-    public ?string $badFile = null;
-
-    public ?string $discardFile = null;
 
     protected bool $deleteFiles = false;
 
@@ -44,11 +44,6 @@ class SQLLoader
     public function __construct(
         public array $options = []
     ) {
-    }
-
-    public static function make(array $options = []): SQLLoader
-    {
-        return new self($options);
     }
 
     public function options(array $options): static
@@ -160,14 +155,12 @@ class SQLLoader
 
     protected function buildTNS(): string
     {
-        $connection = config('sql-loader.connection', 'oracle');
-        $username = config('database.connections.'.$connection.'.username');
-        $password = config('database.connections.'.$connection.'.password');
-        $host = config('database.connections.'.$connection.'.host');
-        $port = config('database.connections.'.$connection.'.port');
-        $database = config('database.connections.'.$connection.'.database');
+        return TnsBuilder::make();
+    }
 
-        return $username.'/'.$password.'@'.$host.':'.$port.'/'.$database;
+    public static function make(array $options = []): SQLLoader
+    {
+        return new self($options);
     }
 
     public function getSqlLoaderBinary(): string
