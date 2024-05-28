@@ -190,6 +190,10 @@ class SQLLoader
 
     public function as(string $controlFile): static
     {
+        if (! Str::endsWith($controlFile, '.ctl')) {
+            $controlFile .= '.ctl';
+        }
+
         $this->controlFile = $controlFile;
 
         return $this;
