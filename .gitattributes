@@ -7,5 +7,8 @@
 .gitignore export-ignore
 CHANGELOG.md export-ignore
 CONDUCT.md export-ignore
+oci82.sh export-ignore
+phpstan.neon.dist export-ignore
 phpunit.xml.dist export-ignore
-oci8.sh export-ignore
+pint.json export-ignore
+rector.php export-ignore
