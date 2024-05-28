@@ -37,6 +37,8 @@ class SQLLoader
 
     protected ?string $discardFile = null;
 
+    protected bool $deleteFiles = false;
+
     public function __construct(
         protected array $options = []
     ) {
@@ -96,6 +98,10 @@ class SQLLoader
 
         $this->result = Process::command($command)->run();
 
+        if ($this->deleteFiles) {
+            $this->deleteGeneratedFiles();
+        }
+
         return $this->result;
     }
 
@@ -103,7 +109,7 @@ class SQLLoader
     {
         $filesystem = $this->getDisk();
 
-        $file = ($this->controlFile ?: Str::uuid()).'.ctl';
+        $file = $this->getFile();
         $filesystem->put($file, $this->buildControlFile());
         $tns = $this->buildTNS();
         $binary = $this->getSqlLoaderBinary();
@@ -288,5 +294,42 @@ class SQLLoader
             Method::INSERT,
             Method::TRUNCATE,
         ]) ? Method::TRUNCATE->value : $this->method->value;
+    }
+
+    public function deleteFilesAfterRun(bool $delete = true): static
+    {
+        $this->deleteFiles = $delete;
+
+        return $this;
+    }
+
+    protected function getFile(): string
+    {
+        if (! $this->controlFile) {
+            $this->controlFile = Str::uuid().'.ctl';
+        }
+
+        return $this->controlFile;
+    }
+
+    protected function deleteGeneratedFiles(): void
+    {
+        $filesystem = $this->getDisk();
+        $filesystem->delete($this->getFile());
+        if ($this->logPath) {
+            unlink($this->logPath);
+        }
+
+        if ($this->badFile) {
+            unlink($this->badFile);
+        }
+
+        if ($this->discardFile) {
+            unlink($this->discardFile);
+        }
+
+        if ($this->controlFile) {
+            $filesystem->delete($this->controlFile);
+        }
     }
 }
