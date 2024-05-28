@@ -15,17 +15,17 @@ use LogicException;
 
 class SQLLoader
 {
-    protected ?string $file = null;
+    public ?string $file = null;
 
-    protected Method $method = Method::APPEND;
+    public Method $method = Method::APPEND;
 
-    protected array $tables = [];
+    public array $tables = [];
 
-    protected string $enclosure = '"';
+    public string $enclosure = '"';
 
-    protected string $delimiter = ',';
+    public string $delimiter = ',';
 
-    protected ?string $controlFile = null;
+    public ?string $controlFile = null;
 
     protected ?string $disk = null;
 
@@ -33,16 +33,16 @@ class SQLLoader
 
     protected ?ProcessResult $result = null;
 
-    protected ?string $badFile = null;
+    public ?string $badFile = null;
 
-    protected ?string $discardFile = null;
+    public ?string $discardFile = null;
 
     protected bool $deleteFiles = false;
 
     protected string $logs = '';
 
     public function __construct(
-        protected array $options = []
+        public array $options = []
     ) {
     }
 
@@ -128,7 +128,7 @@ class SQLLoader
         return $command;
     }
 
-    protected function getDisk(): Filesystem
+    public function getDisk(): Filesystem
     {
         if ($this->disk) {
             return Storage::disk($this->disk);
@@ -155,80 +155,7 @@ class SQLLoader
 
     public function buildControlFile(): string
     {
-        $template = File::get($this->getStub());
-
-        return Str::of($template)
-            ->replace('$OPTIONS', $this->buildOptions())
-            ->replace('$FILE', "INFILE '{$this->file}'")
-            ->replace('$BADFILE', $this->buildBadFile())
-            ->replace('$DISCARDFILE', $this->buildDiscardFile())
-            ->replace('$METHOD', $this->buildMethod())
-            ->replace('$DELIMITER', $this->delimiter)
-            ->replace('$ENCLOSURE', $this->enclosure)
-            ->replace('$INSERTS', $this->buildInserts())
-            ->toString();
-    }
-
-    protected function getStub(): string
-    {
-        return __DIR__.'/stubs/control.stub';
-    }
-
-    protected function buildOptions(): string
-    {
-        return implode(' ', $this->options);
-    }
-
-    protected function buildBadFile(): string
-    {
-        if (! $this->controlFile) {
-            return '';
-        }
-
-        if (! $this->badFile) {
-            $this->badFile = str_replace('.ctl', '.bad', $this->getDisk()->path($this->controlFile));
-        }
-
-        return "BADFILE '{$this->badFile}'";
-    }
-
-    protected function buildDiscardFile(): string
-    {
-        if (! $this->controlFile) {
-            return '';
-        }
-
-        if (! $this->discardFile) {
-            $this->discardFile = str_replace('.ctl', '.dis', $this->getDisk()->path($this->controlFile));
-        }
-
-        return "DISCARDFILE '{$this->discardFile}'";
-    }
-
-    protected function buildMethod(): string
-    {
-        return in_array($this->method, [
-            Method::INSERT,
-            Method::TRUNCATE,
-        ]) ? Method::TRUNCATE->value : $this->method->value;
-    }
-
-    protected function buildInserts(): string
-    {
-        $inserts = '';
-        foreach ($this->tables as $table) {
-            $inserts .= "INTO TABLE {$table['table']}".PHP_EOL;
-            $inserts .= "FIELDS TERMINATED BY '{$this->delimiter}' OPTIONALLY ENCLOSED BY '{$this->enclosure}'".PHP_EOL;
-            // $inserts .= "TRAILING NULLCOLS".PHP_EOL;
-            $inserts .= "({$this->buildColumns($table['columns'])})".PHP_EOL;
-        }
-
-        return $inserts;
-    }
-
-    protected function buildColumns(array $columns): string
-    {
-        return implode(', ', $columns);
+        return (new ControlFileBuilder($this))->build();
     }
 
     protected function buildTNS(): string

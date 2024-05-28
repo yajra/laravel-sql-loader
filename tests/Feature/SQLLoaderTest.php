@@ -56,6 +56,6 @@ test('sqlldr process is invoked', function () {
 
         $controlFile = storage_path('app/users.ctl');
 
-        return str_contains($process->command, "sqlldr userid={$username}/{$password}@{$host}:{$port}/{$database} control={$controlFile}");
+        return str_contains((string) $process->command, "sqlldr userid={$username}/{$password}@{$host}:{$port}/{$database} control={$controlFile}");
     });
 });
