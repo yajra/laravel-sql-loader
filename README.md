@@ -36,6 +36,47 @@ if (! $loader->successful()) {
 return $loader->output();
 ```
 
+## Example
+
+Create a CSV file named `employees.csv` inside `database/files` directory.
+
+```csv
+NAME,DEPT_ID
+John,1
+Jane,1
+"Jim, K",2
+Joe,2
+```
+
+Create a route to test the package.
+
+```php
+Route::get('sql-loader', function () {
+    Schema::dropIfExists('employees');
+    Schema::create('employees', function (OracleBlueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->integer('dept_id');
+    });
+
+    $loader = Yajra\SQLLoader\SQLLoader::make();
+    $loader->inFile(database_path('files/employees.csv'))
+        ->options(['skip=1'])
+        ->method(Yajra\SQLLoader\Method::TRUNCATE)
+        ->into('employees', [
+            'name',
+            'dept_id',
+        ])
+        ->execute();
+
+    if (! $loader->successful()) {
+        return nl2br($loader->debug());
+    }
+
+    return nl2br($loader->output());
+});
+```
+
 ## Credits
 
 - [Arjay Angeles][link-author]
