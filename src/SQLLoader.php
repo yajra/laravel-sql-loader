@@ -120,7 +120,7 @@ class SQLLoader
 
         $command = "$binary userid=$tns control={$filePath}";
         if (! $this->logPath) {
-            $this->logPath = str_replace('.ctl', '.log', $filePath);
+            $this->logPath = str_replace('.ctl', '.log', (string) $filePath);
             $command .= " log={$this->logPath}";
         }
 
