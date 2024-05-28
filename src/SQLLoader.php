@@ -339,4 +339,9 @@ class SQLLoader
     {
         return $this->logs;
     }
+
+    public function result(): ProcessResult
+    {
+        return $this->result;
+    }
 }
