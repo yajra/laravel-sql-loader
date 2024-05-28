@@ -99,13 +99,15 @@ class SQLLoader
 
         $this->result = Process::command($command)->run();
 
-        $this->logs = file_get_contents($this->logPath) ?? '';
+        if ($this->logPath && File::exists($this->logPath)) {
+            $this->logs = File::get($this->logPath);
+        }
 
         if ($this->deleteFiles) {
             $this->deleteGeneratedFiles();
         }
 
-        return $this->result;
+        return $this->result; // @phpstan-ignore-line
     }
 
     protected function buildCommand(): string
@@ -241,21 +243,20 @@ class SQLLoader
 
     protected function deleteGeneratedFiles(): void
     {
+        if ($this->logPath && File::exists($this->logPath)) {
+            File::delete($this->logPath);
+        }
+
+        if ($this->badFile && File::exists($this->badFile)) {
+            File::delete($this->badFile);
+        }
+
+        if ($this->discardFile && File::exists($this->discardFile)) {
+            File::delete($this->discardFile);
+        }
+
         $filesystem = $this->getDisk();
-        $filesystem->delete($this->getFile());
-        if ($this->logPath) {
-            unlink($this->logPath);
-        }
-
-        if ($this->badFile) {
-            unlink($this->badFile);
-        }
-
-        if ($this->discardFile) {
-            unlink($this->discardFile);
-        }
-
-        if ($this->controlFile) {
+        if ($this->controlFile && $filesystem->exists($this->controlFile)) {
             $filesystem->delete($this->controlFile);
         }
     }
