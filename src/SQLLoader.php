@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Yajra\SQLLoader;
 
-use Exception;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\Process\ProcessResult;
 use Illuminate\Support\Facades\File;
@@ -144,6 +143,15 @@ class SQLLoader
         return $this;
     }
 
+    protected function getFile(): string
+    {
+        if (! $this->controlFile) {
+            $this->controlFile = Str::uuid().'.ctl';
+        }
+
+        return $this->controlFile;
+    }
+
     protected function buildControlFile(): string
     {
         $template = File::get($this->getStub());
@@ -188,6 +196,14 @@ class SQLLoader
         return '';
     }
 
+    protected function buildMethod(): string
+    {
+        return in_array($this->method, [
+            Method::INSERT,
+            Method::TRUNCATE,
+        ]) ? Method::TRUNCATE->value : $this->method->value;
+    }
+
     protected function buildInserts(): string
     {
         $inserts = '';
@@ -221,6 +237,27 @@ class SQLLoader
     public function getSqlLoaderBinary(): string
     {
         return config('sql-loader.sqlldr', 'sqlldr');
+    }
+
+    protected function deleteGeneratedFiles(): void
+    {
+        $filesystem = $this->getDisk();
+        $filesystem->delete($this->getFile());
+        if ($this->logPath) {
+            unlink($this->logPath);
+        }
+
+        if ($this->badFile) {
+            unlink($this->badFile);
+        }
+
+        if ($this->discardFile) {
+            unlink($this->discardFile);
+        }
+
+        if ($this->controlFile) {
+            $filesystem->delete($this->controlFile);
+        }
     }
 
     public function as(string $controlFile): static
@@ -292,49 +329,11 @@ class SQLLoader
         return $this;
     }
 
-    protected function buildMethod(): string
-    {
-        return in_array($this->method, [
-            Method::INSERT,
-            Method::TRUNCATE,
-        ]) ? Method::TRUNCATE->value : $this->method->value;
-    }
-
     public function deleteFilesAfterRun(bool $delete = true): static
     {
         $this->deleteFiles = $delete;
 
         return $this;
-    }
-
-    protected function getFile(): string
-    {
-        if (! $this->controlFile) {
-            $this->controlFile = Str::uuid().'.ctl';
-        }
-
-        return $this->controlFile;
-    }
-
-    protected function deleteGeneratedFiles(): void
-    {
-        $filesystem = $this->getDisk();
-        $filesystem->delete($this->getFile());
-        if ($this->logPath) {
-            unlink($this->logPath);
-        }
-
-        if ($this->badFile) {
-            unlink($this->badFile);
-        }
-
-        if ($this->discardFile) {
-            unlink($this->discardFile);
-        }
-
-        if ($this->controlFile) {
-            $filesystem->delete($this->controlFile);
-        }
     }
 
     public function logs(): string
