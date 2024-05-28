@@ -96,7 +96,7 @@ class SQLLoader
             throw new InvalidArgumentException('Input file is required.');
         }
 
-        $this->result = Process::command($this->buildCommand())->run();
+        $this->result = Process::run($this->buildCommand());
 
         if ($this->logPath && File::exists($this->logPath)) {
             $this->logs = File::get($this->logPath);
@@ -153,7 +153,7 @@ class SQLLoader
         return $this->controlFile;
     }
 
-    protected function buildControlFile(): string
+    public function buildControlFile(): string
     {
         $template = File::get($this->getStub());
 

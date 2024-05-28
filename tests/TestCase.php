@@ -6,6 +6,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use Yajra\Oci8\Oci8ServiceProvider;
+use Yajra\SQLLoader\SQLLoaderServiceProvider;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -51,8 +53,8 @@ abstract class TestCase extends BaseTestCase
             'host' => 'localhost',
             'database' => 'xe',
             'service_name' => 'xe',
-            'username' => 'system',
-            'password' => 'oracle',
+            'username' => 'sqlldr',
+            'password' => 'sqlldr',
             'port' => 1521,
         ]);
     }
@@ -60,6 +62,8 @@ abstract class TestCase extends BaseTestCase
     protected function getPackageProviders($app): array
     {
         return [
+            SQLLoaderServiceProvider::class,
+            Oci8ServiceProvider::class,
         ];
     }
 }
