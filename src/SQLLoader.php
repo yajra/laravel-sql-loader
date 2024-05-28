@@ -107,14 +107,14 @@ class SQLLoader
     protected function buildCommand(): string
     {
         $filesystem = $this->getDisk();
-
-        $file = $this->getFile();
-        $filesystem->put($file, $this->buildControlFile());
+        $file = $this->getControlFile();
         $tns = $this->buildTNS();
         $binary = $this->getSqlLoaderBinary();
-        $filePath = $filesystem->path($file);
 
+        $filesystem->put($file, $this->buildControlFile());
+        $filePath = $filesystem->path($file);
         $command = "$binary userid=$tns control={$filePath}";
+
         if (! $this->logPath) {
             $this->logPath = str_replace('.ctl', '.log', (string) $filePath);
             $command .= " log={$this->logPath}";
@@ -139,7 +139,7 @@ class SQLLoader
         return $this;
     }
 
-    protected function getFile(): string
+    protected function getControlFile(): string
     {
         if (! $this->controlFile) {
             $this->controlFile = Str::uuid().'.ctl';
