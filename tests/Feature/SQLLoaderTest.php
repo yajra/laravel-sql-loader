@@ -26,7 +26,7 @@ test('it can create an instance and build the command', function () {
     assertInstanceOf(SQLLoader::class, $loader);
 
     $controlFile = $loader->buildControlFile();
-    assertStringContainsString('OPTIONS(skip=1 load=2)', $controlFile);
+    assertStringContainsString('OPTIONS(skip=1, load=2)', $controlFile);
     assertStringContainsString("INFILE '{$file}'", $controlFile);
     assertStringContainsString("users.bad'", $controlFile);
     assertStringContainsString("users.dis'", $controlFile);

@@ -36,7 +36,7 @@ class ControlFileBuilder
 
     public function options(): string
     {
-        return implode(' ', $this->loader->options);
+        return implode(', ', $this->loader->options);
     }
 
     protected function inputFile(): string

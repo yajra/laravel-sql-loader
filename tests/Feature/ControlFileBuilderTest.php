@@ -13,7 +13,7 @@ test('it can build a control file', function () {
     $controlFile = $ctl->build();
 
     expect($controlFile)->toBeString()
-        ->and($controlFile)->toContain('OPTIONS(skip=1 load=2)')
+        ->and($controlFile)->toContain('OPTIONS(skip=1, load=2)')
         ->and($controlFile)->toContain("INFILE '".__DIR__."/../data/users.dat'")
         ->and($controlFile)->toContain("users.bad'")
         ->and($controlFile)->toContain("users.dis'")
