@@ -24,6 +24,7 @@ Basic usage:
 ```php
 $loader = Yajra\SQLLoader\SQLLoader::make();
 $loader->inFile(database_path('files/employees.csv'))
+    ->as('employees.ctl')
     ->options(['skip=1'])
     ->method(Yajra\SQLLoader\Method::TRUNCATE)
     ->delimiter(',')
@@ -32,7 +33,6 @@ $loader->inFile(database_path('files/employees.csv'))
         'name',
         'dept_id',
     ])
-    ->as('employees')
     ->disk('local')
     ->execute();
 
