@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use LogicException;
 
 class SQLLoader
 {
@@ -180,6 +181,10 @@ class SQLLoader
 
     protected function buildBadFile(): string
     {
+        if (! $this->controlFile) {
+            return '';
+        }
+
         if (! $this->badFile) {
             $this->badFile = str_replace('.ctl', '.bad', $this->getDisk()->path($this->controlFile));
         }
@@ -189,6 +194,10 @@ class SQLLoader
 
     protected function buildDiscardFile(): string
     {
+        if (! $this->controlFile) {
+            return '';
+        }
+
         if (! $this->discardFile) {
             $this->discardFile = str_replace('.ctl', '.dis', $this->getDisk()->path($this->controlFile));
         }
@@ -342,6 +351,10 @@ class SQLLoader
 
     public function result(): ProcessResult
     {
+        if (! $this->result) {
+            throw new LogicException('Please run execute method first.');
+        }
+
         return $this->result;
     }
 }
