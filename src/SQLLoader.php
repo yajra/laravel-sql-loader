@@ -95,9 +95,7 @@ class SQLLoader
             throw new InvalidArgumentException('Input file is required.');
         }
 
-        $command = $this->buildCommand();
-
-        $this->result = Process::command($command)->run();
+        $this->result = Process::command($this->buildCommand())->run();
 
         if ($this->logPath && File::exists($this->logPath)) {
             $this->logs = File::get($this->logPath);
@@ -160,9 +158,9 @@ class SQLLoader
 
         return Str::of($template)
             ->replace('$OPTIONS', $this->buildOptions())
+            ->replace('$FILE', "INFILE '{$this->file}'")
             ->replace('$BADFILE', $this->buildBadFile())
             ->replace('$DISCARDFILE', $this->buildDiscardFile())
-            ->replace('$FILE', "INFILE '{$this->file}'")
             ->replace('$METHOD', $this->buildMethod())
             ->replace('$DELIMITER', $this->delimiter)
             ->replace('$ENCLOSURE', $this->enclosure)
@@ -182,20 +180,20 @@ class SQLLoader
 
     protected function buildBadFile(): string
     {
-        if (isset($this->badFile)) {
-            return "BADFILE '{$this->badFile}'";
+        if (! $this->badFile) {
+            $this->badFile = str_replace('.ctl', '.bad', $this->getDisk()->path($this->controlFile));
         }
 
-        return '';
+        return "BADFILE '{$this->badFile}'";
     }
 
     protected function buildDiscardFile(): string
     {
-        if (isset($this->discardFile)) {
-            return "DISCARDFILE '{$this->discardFile}'";
+        if (! $this->discardFile) {
+            $this->discardFile = str_replace('.ctl', '.dis', $this->getDisk()->path($this->controlFile));
         }
 
-        return '';
+        return "DISCARDFILE '{$this->discardFile}'";
     }
 
     protected function buildMethod(): string
