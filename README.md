@@ -36,11 +36,7 @@ $loader->inFile(database_path('files/employees.csv'))
     ->disk('local')
     ->execute();
 
-if (! $loader->successful()) {
-    return $loader->debug();
-}
-
-return $loader->output();
+return nl2br($loader->logs());
 ```
 
 ## Example
@@ -76,11 +72,7 @@ Route::get('sql-loader', function () {
         ])
         ->execute();
 
-    if (! $loader->successful()) {
-        return nl2br($loader->debug());
-    }
-
-    return \Illuminate\Support\Facades\DB::table('employees')->get();
+    return nl2br($loader->logs());
 });
 ```
 
