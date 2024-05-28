@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yajra\SQLLoader;
 
+use Exception;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\Process\ProcessResult;
 use Illuminate\Support\Facades\File;
@@ -14,7 +15,7 @@ use InvalidArgumentException;
 
 class SQLLoader
 {
-    protected string $file;
+    protected ?string $file = null;
 
     protected Method $method = Method::INSERT;
 
@@ -24,17 +25,17 @@ class SQLLoader
 
     protected string $delimiter = ',';
 
-    protected string $controlFile = '';
+    protected ?string $controlFile = null;
 
-    protected string $disk;
+    protected ?string $disk = null;
 
-    protected string $logPath = '';
+    protected ?string $logPath = null;
 
-    protected ProcessResult $output;
+    protected ?ProcessResult $output = null;
 
-    protected string $badFile;
+    protected ?string $badFile = null;
 
-    protected string $discardFile;
+    protected ?string $discardFile = null;
 
     public function __construct(
         protected array $options = []
@@ -91,24 +92,28 @@ class SQLLoader
             throw new InvalidArgumentException('Input file is required.');
         }
 
-        return $this->output = Process::command($this->buildCommand())->run();
+        $command = $this->buildCommand();
+
+        $this->output = Process::command($command)->run();
+
+        return $this->output;
     }
 
     protected function buildCommand(): string
     {
-        $file = ($this->controlFile ?: Str::uuid()).'.ctl';
-        $this->getDisk()->put($file, $this->buildControlFile());
+        $filesystem = $this->getDisk();
 
+        $file = ($this->controlFile ?: Str::uuid()).'.ctl';
+        $filesystem->put($file, $this->buildControlFile());
         $tns = $this->buildTNS();
         $binary = $this->getSqlLoaderBinary();
-        $filePath = $this->getDisk()->path($file);
+        $filePath = $filesystem->path($file);
 
         $command = "$binary userid=$tns control={$filePath}";
-        if (empty($this->logPath)) {
-            $this->logPath = str_replace('.ctl', '.log', (string) $this->getDisk()->path($file));
+        if (! $this->logPath) {
+            $this->logPath = str_replace('.ctl', '.log', $filePath);
+            $command .= " log={$this->logPath}";
         }
-
-        $command .= " log={$this->logPath}";
 
         return $command;
     }
@@ -138,7 +143,7 @@ class SQLLoader
             ->replace('$BADFILE', $this->buildBadFile())
             ->replace('$DISCARDFILE', $this->buildDiscardFile())
             ->replace('$FILE', "INFILE '{$this->file}'")
-            ->replace('$METHOD', $this->method->value)
+            ->replace('$METHOD', $this->buildMethod())
             ->replace('$DELIMITER', $this->delimiter)
             ->replace('$ENCLOSURE', $this->enclosure)
             ->replace('$INSERTS', $this->buildInserts())
@@ -224,28 +229,45 @@ class SQLLoader
 
     public function successful(): bool
     {
-        return $this->output->exitCode() === 0;
+        if (is_null($this->output)) {
+            return false;
+        }
+
+        return $this->output->successful();
     }
 
     public function debug(): string
     {
         $debug = 'Command:'.PHP_EOL.$this->buildCommand().PHP_EOL.PHP_EOL;
-        $debug .= 'Output:'.$this->output().PHP_EOL.PHP_EOL;
-        $debug .= 'Error Output:'.PHP_EOL.$this->errorOutput().PHP_EOL;
-        $debug .= 'Exit Code: '.$this->output->exitCode().PHP_EOL.PHP_EOL;
         $debug .= 'Control File:'.PHP_EOL.$this->buildControlFile().PHP_EOL;
+
+        if ($this->output) {
+            $debug .= 'Output:'.$this->output->output().PHP_EOL.PHP_EOL;
+            $debug .= 'Error Output:'.PHP_EOL.$this->output->errorOutput().PHP_EOL;
+            $debug .= 'Exit Code: '.$this->output->exitCode().PHP_EOL.PHP_EOL;
+        }
 
         return $debug;
     }
 
-    public function output(): string
+    /**
+     * @throws \Exception
+     */
+    public function output(): ProcessResult
     {
-        return $this->output->output();
+        if (is_null($this->output)) {
+            throw new Exception('No output available');
+        }
+
+        return $this->output;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function errorOutput(): string
     {
-        return $this->output->errorOutput();
+        return $this->output()->errorOutput();
     }
 
     public function delimiter(string $delimiter): static
@@ -260,5 +282,13 @@ class SQLLoader
         $this->enclosure = $enclosure;
 
         return $this;
+    }
+
+    protected function buildMethod(): string
+    {
+        return in_array($this->method, [
+            Method::INSERT,
+            Method::TRUNCATE,
+        ]) ? Method::TRUNCATE->value : $this->method->value;
     }
 }
