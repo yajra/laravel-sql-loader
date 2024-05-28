@@ -2,6 +2,13 @@
 
 A Laravel package that allows you to easily load data into Oracle database using `sqlldr`.
 
+## Requirements
+
+- Oracle Instant Client
+- Oracle SQL Loader
+- Laravel 10.x or higher
+- Laravel OCI8 10.x or higher
+
 ## Installation
 
 You can install the package via composer:
