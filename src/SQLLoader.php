@@ -31,7 +31,7 @@ class SQLLoader
 
     protected ?string $logPath = null;
 
-    protected ?ProcessResult $output = null;
+    protected ?ProcessResult $result = null;
 
     protected ?string $badFile = null;
 
@@ -94,9 +94,9 @@ class SQLLoader
 
         $command = $this->buildCommand();
 
-        $this->output = Process::command($command)->run();
+        $this->result = Process::command($command)->run();
 
-        return $this->output;
+        return $this->result;
     }
 
     protected function buildCommand(): string
@@ -229,11 +229,11 @@ class SQLLoader
 
     public function successful(): bool
     {
-        if (is_null($this->output)) {
+        if (is_null($this->result)) {
             return false;
         }
 
-        return $this->output->successful();
+        return $this->result->successful();
     }
 
     public function debug(): string
@@ -241,33 +241,31 @@ class SQLLoader
         $debug = 'Command:'.PHP_EOL.$this->buildCommand().PHP_EOL.PHP_EOL;
         $debug .= 'Control File:'.PHP_EOL.$this->buildControlFile().PHP_EOL;
 
-        if ($this->output) {
-            $debug .= 'Output:'.$this->output->output().PHP_EOL.PHP_EOL;
-            $debug .= 'Error Output:'.PHP_EOL.$this->output->errorOutput().PHP_EOL;
-            $debug .= 'Exit Code: '.$this->output->exitCode().PHP_EOL.PHP_EOL;
+        if ($this->result) {
+            $debug .= 'Output:'.$this->result->output().PHP_EOL.PHP_EOL;
+            $debug .= 'Error Output:'.PHP_EOL.$this->result->errorOutput().PHP_EOL;
+            $debug .= 'Exit Code: '.$this->result->exitCode().PHP_EOL.PHP_EOL;
         }
 
         return $debug;
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function output(): ProcessResult
+    public function output(): string
     {
-        if (is_null($this->output)) {
-            throw new Exception('No output available');
+        if (is_null($this->result)) {
+            return 'No output available';
         }
 
-        return $this->output;
+        return $this->result->output();
     }
 
-    /**
-     * @throws \Exception
-     */
     public function errorOutput(): string
     {
-        return $this->output()->errorOutput();
+        if (is_null($this->result)) {
+            return 'No error output available';
+        }
+
+        return $this->result->errorOutput();
     }
 
     public function delimiter(string $delimiter): static
