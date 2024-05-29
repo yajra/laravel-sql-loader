@@ -53,8 +53,8 @@ abstract class TestCase extends BaseTestCase
             'host' => 'localhost',
             'database' => 'xe',
             'service_name' => 'xe',
-            'username' => 'sqlldr',
-            'password' => 'sqlldr',
+            'username' => 'system',
+            'password' => 'oracle',
             'port' => 1521,
         ]);
     }
