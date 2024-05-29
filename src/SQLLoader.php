@@ -107,7 +107,7 @@ class SQLLoader
     {
         $filesystem = $this->getDisk();
 
-        $file = $this->getFile();
+        $file = $this->getControlFile();
         $filesystem->put($file, $this->buildControlFile());
         $tns = $this->buildTNS();
         $binary = $this->getSqlLoaderBinary();
@@ -138,7 +138,7 @@ class SQLLoader
         return $this;
     }
 
-    protected function getFile(): string
+    protected function getControlFile(): string
     {
         if (! $this->controlFile) {
             $this->controlFile = Str::uuid().'.ctl';
