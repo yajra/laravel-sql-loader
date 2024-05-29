@@ -15,18 +15,15 @@ use LogicException;
 
 class SQLLoader
 {
-    public ?string $file = null;
-
-    public Method $method = Method::APPEND;
+    /** @var InputFile[] */
+    public array $inputFiles = [];
 
     /** @var TableDefinition[] */
     public array $tables = [];
 
+    public Method $method = Method::APPEND;
+
     public ?string $controlFile = null;
-
-    public ?string $badFile = null;
-
-    public ?string $discardFile = null;
 
     protected ?string $disk = null;
 
@@ -38,9 +35,8 @@ class SQLLoader
 
     protected string $logs = '';
 
-    public function __construct(
-        public array $options = []
-    ) {
+    public function __construct(public array $options = [])
+    {
     }
 
     public function options(array $options): static
@@ -50,13 +46,17 @@ class SQLLoader
         return $this;
     }
 
-    public function inFile(string $file): static
-    {
-        if (! File::exists($file)) {
-            throw new InvalidArgumentException("File [{$file}] does not exist.");
+    public function inFile(
+        string $path,
+        ?string $badFile = null,
+        ?string $discardFile = null,
+        ?string $discardMax = null
+    ): static {
+        if (! File::exists($path) && $path !== '*') {
+            throw new InvalidArgumentException("File [{$path}] does not exist.");
         }
 
-        $this->file = $file;
+        $this->inputFiles[] = new InputFile($path, $badFile, $discardFile, $discardMax);
 
         return $this;
     }
@@ -86,7 +86,7 @@ class SQLLoader
             throw new InvalidArgumentException('At least one table definition is required.');
         }
 
-        if (! $this->file) {
+        if (! $this->inputFiles) {
             throw new InvalidArgumentException('Input file is required.');
         }
 
@@ -173,12 +173,18 @@ class SQLLoader
             File::delete($this->logPath);
         }
 
-        if ($this->badFile && File::exists($this->badFile)) {
-            File::delete($this->badFile);
-        }
+        foreach ($this->inputFiles as $inputFile) {
+            if ($inputFile->path !== '*') {
+                File::delete($inputFile->path);
+            }
 
-        if ($this->discardFile && File::exists($this->discardFile)) {
-            File::delete($this->discardFile);
+            if ($inputFile->badFile && File::exists($inputFile->badFile)) {
+                File::delete($inputFile->badFile);
+            }
+
+            if ($inputFile->discardFile && File::exists($inputFile->discardFile)) {
+                File::delete($inputFile->discardFile);
+            }
         }
 
         $filesystem = $this->getDisk();

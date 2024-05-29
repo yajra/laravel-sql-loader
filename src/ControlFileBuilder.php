@@ -19,65 +19,28 @@ class ControlFileBuilder
 
         return Str::of($template)
             ->replace('$OPTIONS', $this->options())
-            ->replace('$FILE', $this->inputFile())
-            ->replace('$BADFILE', $this->badFile())
-            ->replace('$DISCARDFILE', $this->discardFile())
+            ->replace('$FILES', $this->inputFiles())
             ->replace('$METHOD', $this->method())
             ->replace('$INSERTS', $this->inserts())
             ->toString();
     }
 
-    public function getStub(): string
+    protected function getStub(): string
     {
         return __DIR__.'/stubs/control.stub';
     }
 
-    public function options(): string
+    protected function options(): string
     {
         return implode(', ', $this->loader->options);
     }
 
-    protected function inputFile(): string
+    protected function inputFiles(): string
     {
-        return "INFILE '{$this->loader->file}'";
+        return implode(PHP_EOL, $this->loader->inputFiles);
     }
 
-    public function badFile(): string
-    {
-        if (! $this->loader->controlFile) {
-            return '';
-        }
-
-        if (! $this->loader->badFile) {
-            $this->loader->badFile = str_replace('.ctl', '.bad', $this->getControlFilePath());
-        }
-
-        return "BADFILE '{$this->loader->badFile}'";
-    }
-
-    protected function getControlFilePath(): string
-    {
-        if (is_null($this->loader->controlFile)) {
-            $this->loader->controlFile = Str::uuid().'.ctl';
-        }
-
-        return $this->loader->getDisk()->path($this->loader->controlFile);
-    }
-
-    public function discardFile(): string
-    {
-        if (! $this->loader->controlFile) {
-            return '';
-        }
-
-        if (! $this->loader->discardFile) {
-            $this->loader->discardFile = str_replace('.ctl', '.dis', $this->getControlFilePath());
-        }
-
-        return "DISCARDFILE '{$this->loader->discardFile}'";
-    }
-
-    public function method(): string
+    protected function method(): string
     {
         return in_array($this->loader->method, [
             Method::INSERT,
@@ -85,7 +48,7 @@ class ControlFileBuilder
         ]) ? Method::TRUNCATE->value : $this->loader->method->value;
     }
 
-    public function inserts(): string
+    protected function inserts(): string
     {
         $inserts = '';
         foreach ($this->loader->tables as $table) {
@@ -110,8 +73,8 @@ class ControlFileBuilder
         return $inserts;
     }
 
-    public function buildColumns(array $columns): string
+    protected function buildColumns(array $columns): string
     {
-        return implode(','.PHP_EOL, array_map(fn($column) => str_repeat(' ', 2).$column, $columns));
+        return implode(','.PHP_EOL, array_map(fn ($column) => str_repeat(' ', 2).$column, $columns));
     }
 }

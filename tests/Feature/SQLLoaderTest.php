@@ -4,6 +4,7 @@ use Illuminate\Contracts\Process\ProcessResult;
 use Illuminate\Process\PendingProcess;
 use Illuminate\Support\Facades\Process;
 use Yajra\SQLLoader\SQLLoader;
+use Yajra\SQLLoader\TnsBuilder;
 
 use function PHPUnit\Framework\assertInstanceOf;
 use function PHPUnit\Framework\assertStringContainsString;
@@ -19,7 +20,7 @@ test('it can create an instance and build the command', function () {
     $file = __DIR__.'/../data/users.dat';
 
     $loader = new SQLLoader(['skip=1', 'load=2']);
-    $loader->inFile($file)
+    $loader->inFile(path: $file, badFile: 'users.bad', discardFile: 'users.dis', discardMax: '1')
         ->as('users.ctl')
         ->into('users', ['id', 'name', 'email']);
 
@@ -28,8 +29,9 @@ test('it can create an instance and build the command', function () {
     $controlFile = $loader->buildControlFile();
     assertStringContainsString('OPTIONS(skip=1, load=2)', $controlFile);
     assertStringContainsString("INFILE '{$file}'", $controlFile);
-    assertStringContainsString("users.bad'", $controlFile);
-    assertStringContainsString("users.dis'", $controlFile);
+    assertStringContainsString("BADFILE 'users.bad'", $controlFile);
+    assertStringContainsString("DISCARDFILE 'users.dis'", $controlFile);
+    assertStringContainsString('DISCARDMAX 1', $controlFile);
     assertStringContainsString('APPEND', $controlFile);
     assertStringContainsString('INTO TABLE users', $controlFile);
     assertStringContainsString("FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'", $controlFile);
@@ -61,5 +63,40 @@ test('sqlldr process is invoked', function () {
         $controlFile = storage_path('app/users.ctl');
 
         return str_contains((string) $process->command, "sqlldr userid={$username}/{$password}@{$host}:{$port}/{$database} control={$controlFile}");
+    });
+});
+
+test('it allows * input file', function () {
+    Process::fake();
+
+    $loader = new SQLLoader(['skip=1']);
+    $loader->inFile('*')
+        ->as('users.ctl')
+        ->into('users', ['id', 'name', 'email'])
+        ->execute();
+
+    Process::assertRan(function (PendingProcess $process, ProcessResult $result) {
+        $tns = TnsBuilder::make();
+        $controlFile = storage_path('app/users.ctl');
+
+        return str_contains((string) $process->command, "sqlldr userid={$tns} control={$controlFile}");
+    });
+});
+
+test('it accepts multiple input files', function () {
+    Process::fake();
+
+    $loader = new SQLLoader(['skip=1']);
+    $loader->inFile(__DIR__.'/../data/users.dat')
+        ->inFile(__DIR__.'/../data/roles.dat')
+        ->as('users.ctl')
+        ->into('users', ['id', 'name', 'email'])
+        ->execute();
+
+    Process::assertRan(function (PendingProcess $process, ProcessResult $result) {
+        $tns = TnsBuilder::make();
+        $controlFile = storage_path('app/users.ctl');
+
+        return str_contains((string) $process->command, "sqlldr userid={$tns} control={$controlFile}");
     });
 });
