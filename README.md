@@ -1,5 +1,11 @@
 # Oracle SQL Loader for Laravel
 
+[![Continuous Integration](https://github.com/yajra/laravel-sql-loader/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/yajra/laravel-sql-loader/actions/workflows/continuous-integration.yml)
+[![Static Analysis](https://github.com/yajra/laravel-sql-loader/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/yajra/laravel-sql-loader/actions/workflows/static-analysis.yml)
+[![Latest Stable Version](https://img.shields.io/packagist/v/yajra/laravel-sql-loader.svg)](https://packagist.org/packages/yajra/laravel-sql-loader)
+[![Total Downloads](https://poser.pugx.org/yajra/laravel-sql-loader/downloads.png)](https://packagist.org/packages/yajra/laravel-sql-loader)
+[![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://packagist.org/packages/yajra/laravel-sql-loader)
+
 A Laravel package that allows you to easily load data into Oracle database using `sqlldr`.
 
 ## Requirements
