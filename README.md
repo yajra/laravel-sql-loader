@@ -35,7 +35,7 @@ $loader->inFile(database_path('files/employees.csv'))
         ],
         terminatedBy: ',',
         enclosedBy: '"',
-        trailing: null
+        trailing: true
     )
     ->disk('local')
     ->execute();

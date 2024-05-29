@@ -11,7 +11,7 @@ class TableDefinition implements \Stringable
         public array $columns,
         public ?string $terminatedBy = null,
         public ?string $enclosedBy = null,
-        public ?string $trailing = null,
+        public bool $trailing = false,
         public array $formatOptions = []
     ) {
     }
@@ -29,7 +29,7 @@ class TableDefinition implements \Stringable
         }
 
         if ($this->trailing) {
-            $sql .= $this->trailing.PHP_EOL;
+            $sql .= 'TRAILING NULLCOLS'.PHP_EOL;
         }
 
         if ($this->formatOptions) {
