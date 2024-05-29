@@ -50,31 +50,6 @@ class ControlFileBuilder
 
     protected function inserts(): string
     {
-        $inserts = '';
-        foreach ($this->loader->tables as $table) {
-            $inserts .= "INTO TABLE {$table->table}".PHP_EOL;
-            if ($table->terminatedBy) {
-                $inserts .= "FIELDS TERMINATED BY '{$table->terminatedBy}' ";
-            }
-
-            if ($table->enclosedBy) {
-                $inserts .= "OPTIONALLY ENCLOSED BY '{$table->enclosedBy}'".PHP_EOL;
-            }
-
-            if ($table->trailing) {
-                $inserts .= 'TRAILING NULLCOLS'.PHP_EOL;
-            }
-
-            $inserts .= '('.PHP_EOL;
-            $inserts .= $this->buildColumns($table->columns).PHP_EOL;
-            $inserts .= ')'.PHP_EOL;
-        }
-
-        return $inserts;
-    }
-
-    protected function buildColumns(array $columns): string
-    {
-        return implode(','.PHP_EOL, array_map(fn ($column) => str_repeat(' ', 2).$column, $columns));
+        return implode(PHP_EOL, $this->loader->tables);
     }
 }

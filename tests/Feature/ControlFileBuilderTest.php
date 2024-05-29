@@ -69,3 +69,29 @@ test('it can build with bad file, discard file and discard max', function () {
         ->and($controlFile)->toContain("DISCARDFILE 'users.dis'")
         ->and($controlFile)->toContain('DISCARDMAX 1');
 });
+
+test('it can build table with formatting options', function () {
+    $loader = new SQLLoader(['skip=1', 'load=2']);
+    $loader->inFile(__DIR__.'/../data/users.dat')
+        ->as('users.ctl')
+        ->into(
+            table: 'users',
+            columns: ['id', 'name', 'email'],
+            trailing: 'TRAILING NULLCOLS',
+            formatOptions: [
+                'DATE_FORMAT "YYYY-MM-DD"',
+                'TIMESTAMP FORMAT "YYYY-MM-DD HH24:MI:SS"',
+                'TIMESTAMP WITH TIME ZONE "YYYY-MM-DD HH24:MI:SS TZH:TZM"',
+                'TIMESTAMP WITH LOCAL TIME ZONE "YYYY-MM-DD HH24:MI:SS"',
+            ]
+        );
+
+    $ctl = new ControlFileBuilder($loader);
+    $controlFile = $ctl->build();
+
+    expect($controlFile)->toBeString()
+        ->and($controlFile)->toContain('DATE_FORMAT "YYYY-MM-DD"')
+        ->and($controlFile)->toContain('TIMESTAMP FORMAT "YYYY-MM-DD HH24:MI:SS')
+        ->and($controlFile)->toContain('TIMESTAMP WITH TIME ZONE "YYYY-MM-DD HH24:MI:SS TZH:TZM"')
+        ->and($controlFile)->toContain('TIMESTAMP WITH LOCAL TIME ZONE "YYYY-MM-DD HH24:MI:SS"');
+});
