@@ -21,7 +21,7 @@ class SQLLoader
     /** @var TableDefinition[] */
     public array $tables = [];
 
-    public Method $method = Method::APPEND;
+    public Mode $mode = Mode::APPEND;
 
     public ?string $controlFile = null;
 
@@ -61,9 +61,9 @@ class SQLLoader
         return $this;
     }
 
-    public function method(Method $method): static
+    public function mode(Mode $mode): static
     {
-        $this->method = $method;
+        $this->mode = $mode;
 
         return $this;
     }

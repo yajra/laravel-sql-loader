@@ -42,10 +42,10 @@ class ControlFileBuilder
 
     protected function method(): string
     {
-        return in_array($this->loader->method, [
-            Method::INSERT,
-            Method::TRUNCATE,
-        ]) ? Method::TRUNCATE->value : $this->loader->method->value;
+        return in_array($this->loader->mode, [
+            Mode::INSERT,
+            Mode::TRUNCATE,
+        ]) ? Mode::TRUNCATE->value : $this->loader->mode->value;
     }
 
     protected function inserts(): string

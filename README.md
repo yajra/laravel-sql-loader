@@ -26,7 +26,7 @@ $loader = Yajra\SQLLoader\SQLLoader::make();
 $loader->inFile(database_path('files/employees.csv'))
     ->as('employees.ctl')
     ->options(['skip=1'])
-    ->method(Yajra\SQLLoader\Method::TRUNCATE)
+    ->mode(Yajra\SQLLoader\Mode::TRUNCATE)
     ->into(
         table: 'employees', 
         columns: [
@@ -69,7 +69,7 @@ Route::get('sql-loader', function () {
     $loader = Yajra\SQLLoader\SQLLoader::make();
     $loader->inFile(database_path('files/employees.csv'))
         ->options(['skip=1'])
-        ->method(Yajra\SQLLoader\Method::TRUNCATE)
+        ->mode(Yajra\SQLLoader\Mode::TRUNCATE)
         ->into('employees', [
             'name',
             'dept_id',

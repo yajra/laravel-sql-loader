@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Yajra\SQLLoader;
 
-enum Method: string
+enum Mode: string
 {
     case INSERT = 'INSERT';
     case APPEND = 'APPEND';
