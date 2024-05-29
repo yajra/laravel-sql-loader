@@ -72,11 +72,10 @@ class SQLLoader
         string $table,
         array $columns,
         ?string $terminatedBy = ',',
-        bool $optionally = true,
         ?string $enclosedBy = '"',
         ?string $trailing = null
     ): static {
-        $this->tables[] = new TableDefinition($table, $columns, $terminatedBy, $optionally, $enclosedBy, $trailing);
+        $this->tables[] = new TableDefinition($table, $columns, $terminatedBy, $enclosedBy, $trailing);
 
         return $this;
     }

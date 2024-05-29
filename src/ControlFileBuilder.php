@@ -94,12 +94,8 @@ class ControlFileBuilder
                 $inserts .= "FIELDS TERMINATED BY '{$table->terminatedBy}' ";
             }
 
-            if ($table->optionally) {
-                $inserts .= 'OPTIONALLY ';
-            }
-
             if ($table->enclosedBy) {
-                $inserts .= "ENCLOSED BY '{$table->enclosedBy}'".PHP_EOL;
+                $inserts .= "OPTIONALLY ENCLOSED BY '{$table->enclosedBy}'".PHP_EOL;
             }
 
             if ($table->trailing) {
