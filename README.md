@@ -34,7 +34,6 @@ $loader->inFile(database_path('files/employees.csv'))
             'dept_id',
         ],
         terminatedBy: ',',
-        optionally: true,
         enclosedBy: '"',
         trailing: null
     )
