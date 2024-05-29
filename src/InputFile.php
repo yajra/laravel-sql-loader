@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Yajra\SQLLoader;
 
-class InputFile implements \Stringable
+use Stringable;
+
+class InputFile implements Stringable
 {
     public function __construct(
         public string $path,

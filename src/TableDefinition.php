@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Yajra\SQLLoader;
 
-class TableDefinition implements \Stringable
+use Stringable;
+
+class TableDefinition implements Stringable
 {
     public function __construct(
         public string $table,

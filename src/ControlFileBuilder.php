@@ -6,8 +6,9 @@ namespace Yajra\SQLLoader;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use Stringable;
 
-class ControlFileBuilder
+class ControlFileBuilder implements Stringable
 {
     public function __construct(public SQLLoader $loader)
     {
@@ -51,5 +52,10 @@ class ControlFileBuilder
     protected function inserts(): string
     {
         return implode(PHP_EOL, $this->loader->tables);
+    }
+
+    public function __toString(): string
+    {
+        return $this->build();
     }
 }
