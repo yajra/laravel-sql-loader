@@ -10,9 +10,7 @@ test('it can build a control file', function () {
         ->into(
             table: 'users',
             columns: ['id', 'name', 'email'],
-            terminatedBy: ',',
-            optionally: true,
-            enclosedBy: '"'
+            trailing: 'TRAILING NULLCOLS'
         );
 
     $ctl = new ControlFileBuilder($loader);
@@ -28,6 +26,7 @@ test('it can build a control file', function () {
         ->and($controlFile)->toContain("FIELDS TERMINATED BY ','")
         ->and($controlFile)->toContain('OPTIONALLY')
         ->and($controlFile)->toContain("ENCLOSED BY '\"'")
+        ->and($controlFile)->toContain('TRAILING NULLCOLS')
         ->and($controlFile)->toContain('(')
         ->and($controlFile)->toContain('id,')
         ->and($controlFile)->toContain('name,')
