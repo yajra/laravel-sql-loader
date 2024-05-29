@@ -37,7 +37,9 @@ class TableDefinition implements \Stringable
         }
 
         $sql .= '('.PHP_EOL;
-        $sql .= $this->buildColumns($this->columns).PHP_EOL;
+        if ($this->columns) {
+            $sql .= $this->buildColumns($this->columns).PHP_EOL;
+        }
         $sql .= ')'.PHP_EOL;
 
         return $sql;
