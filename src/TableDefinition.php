@@ -40,15 +40,13 @@ class TableDefinition implements Stringable
 
         $sql .= '('.PHP_EOL;
         if ($this->columns) {
-            $sql .= $this->buildColumns($this->columns).PHP_EOL;
+            $sql .= implode(
+                ','.PHP_EOL,
+                array_map(fn ($column) => str_repeat(' ', 2).$column, $this->columns)
+            ).PHP_EOL;
         }
         $sql .= ')'.PHP_EOL;
 
         return $sql;
-    }
-
-    protected function buildColumns(array $columns): string
-    {
-        return implode(','.PHP_EOL, array_map(fn ($column) => str_repeat(' ', 2).$column, $columns));
     }
 }

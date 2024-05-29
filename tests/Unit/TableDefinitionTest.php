@@ -72,7 +72,7 @@ test('it can build it\'s own sql string without terminated by', function () {
 
     assertEquals(
         "INTO TABLE users\n(\n  id,\n  name,\n  email\n)\n",
-        $table
+        $table->__toString()
     );
 });
 
