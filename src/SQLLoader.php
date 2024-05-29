@@ -93,11 +93,11 @@ class SQLLoader
 
         $this->result = Process::run($this->buildCommand());
 
-        if ($this->logPath && File::exists($this->logPath)) {
-            $this->logs = File::get($this->logPath);
-        }
-
         if ($this->deleteFiles) {
+            if ($this->logPath && File::exists($this->logPath)) {
+                $this->logs = File::get($this->logPath);
+            }
+
             $this->deleteGeneratedFiles();
         }
 
@@ -262,7 +262,15 @@ class SQLLoader
 
     public function logs(): string
     {
-        return $this->logs;
+        if ($this->logs) {
+            return $this->logs;
+        }
+
+        if ($this->logPath && File::exists($this->logPath)) {
+            return File::get($this->logPath);
+        }
+
+        return 'No log file available';
     }
 
     public function result(): ProcessResult
