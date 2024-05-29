@@ -27,12 +27,17 @@ $loader->inFile(database_path('files/employees.csv'))
     ->as('employees.ctl')
     ->options(['skip=1'])
     ->method(Yajra\SQLLoader\Method::TRUNCATE)
-    ->delimiter(',')
-    ->enclosure('"')
-    ->into('employees', [
-        'name',
-        'dept_id',
-    ])
+    ->into(
+        table: 'employees', 
+        columns: [
+            'name',
+            'dept_id',
+        ],
+        terminatedBy: ',',
+        optionally: true,
+        enclosedBy: '"',
+        trailing: null
+    )
     ->disk('local')
     ->execute();
 
