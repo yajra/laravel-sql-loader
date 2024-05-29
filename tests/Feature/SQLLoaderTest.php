@@ -33,7 +33,11 @@ test('it can create an instance and build the command', function () {
     assertStringContainsString('APPEND', $controlFile);
     assertStringContainsString('INTO TABLE users', $controlFile);
     assertStringContainsString("FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'", $controlFile);
-    assertStringContainsString('(id, name, email)', $controlFile);
+    assertStringContainsString('(', $controlFile);
+    assertStringContainsString('  id,', $controlFile);
+    assertStringContainsString('  name,', $controlFile);
+    assertStringContainsString('  email', $controlFile);
+    assertStringContainsString(')', $controlFile);
 });
 
 test('sqlldr process is invoked', function () {

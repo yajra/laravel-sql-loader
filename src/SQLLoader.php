@@ -19,11 +19,8 @@ class SQLLoader
 
     public Method $method = Method::APPEND;
 
+    /** @var TableDefinition[] */
     public array $tables = [];
-
-    public string $enclosure = '"';
-
-    public string $delimiter = ',';
 
     public ?string $controlFile = null;
 
@@ -71,12 +68,15 @@ class SQLLoader
         return $this;
     }
 
-    public function into(string $table, array $columns): static
-    {
-        $this->tables[] = [
-            'table' => $table,
-            'columns' => $columns,
-        ];
+    public function into(
+        string $table,
+        array $columns,
+        ?string $terminatedBy = ',',
+        bool $optionally = true,
+        ?string $enclosedBy = '"',
+        ?string $trailing = null
+    ): static {
+        $this->tables[] = new TableDefinition($table, $columns, $terminatedBy, $optionally, $enclosedBy, $trailing);
 
         return $this;
     }
@@ -107,14 +107,14 @@ class SQLLoader
     protected function buildCommand(): string
     {
         $filesystem = $this->getDisk();
-        $file = $this->getControlFile();
+
+        $file = $this->getFile();
+        $filesystem->put($file, $this->buildControlFile());
         $tns = $this->buildTNS();
         $binary = $this->getSqlLoaderBinary();
-
-        $filesystem->put($file, $this->buildControlFile());
         $filePath = $filesystem->path($file);
-        $command = "$binary userid=$tns control={$filePath}";
 
+        $command = "$binary userid=$tns control={$filePath}";
         if (! $this->logPath) {
             $this->logPath = str_replace('.ctl', '.log', (string) $filePath);
             $command .= " log={$this->logPath}";
@@ -139,7 +139,7 @@ class SQLLoader
         return $this;
     }
 
-    protected function getControlFile(): string
+    protected function getFile(): string
     {
         if (! $this->controlFile) {
             $this->controlFile = Str::uuid().'.ctl';
@@ -245,20 +245,6 @@ class SQLLoader
         }
 
         return $this->result->errorOutput();
-    }
-
-    public function delimiter(string $delimiter): static
-    {
-        $this->delimiter = $delimiter;
-
-        return $this;
-    }
-
-    public function enclosure(string $enclosure): static
-    {
-        $this->enclosure = $enclosure;
-
-        return $this;
     }
 
     public function deleteFilesAfterRun(bool $delete = true): static

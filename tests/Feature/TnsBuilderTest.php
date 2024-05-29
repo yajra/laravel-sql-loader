@@ -1,6 +1,7 @@
 <?php
 
 use Yajra\SQLLoader\TnsBuilder;
+
 use function PHPUnit\Framework\assertEquals;
 
 test('it can generate a tns string', function () {

@@ -23,8 +23,6 @@ class ControlFileBuilder
             ->replace('$BADFILE', $this->badFile())
             ->replace('$DISCARDFILE', $this->discardFile())
             ->replace('$METHOD', $this->method())
-            ->replace('$DELIMITER', $this->delimiter())
-            ->replace('$ENCLOSURE', $this->enclosure())
             ->replace('$INSERTS', $this->inserts())
             ->toString();
     }
@@ -87,24 +85,30 @@ class ControlFileBuilder
         ]) ? Method::TRUNCATE->value : $this->loader->method->value;
     }
 
-    protected function delimiter(): string
-    {
-        return $this->loader->delimiter;
-    }
-
-    protected function enclosure(): string
-    {
-        return $this->loader->enclosure;
-    }
-
     public function inserts(): string
     {
         $inserts = '';
         foreach ($this->loader->tables as $table) {
-            $inserts .= "INTO TABLE {$table['table']}".PHP_EOL;
-            $inserts .= "FIELDS TERMINATED BY '{$this->delimiter()}' OPTIONALLY ENCLOSED BY '{$this->enclosure()}'".PHP_EOL;
-            // $inserts .= "TRAILING NULLCOLS".PHP_EOL;
-            $inserts .= "({$this->buildColumns($table['columns'])})".PHP_EOL;
+            $inserts .= "INTO TABLE {$table->table}".PHP_EOL;
+            if ($table->terminatedBy) {
+                $inserts .= "FIELDS TERMINATED BY '{$table->terminatedBy}' ";
+            }
+
+            if ($table->optionally) {
+                $inserts .= 'OPTIONALLY ';
+            }
+
+            if ($table->enclosedBy) {
+                $inserts .= "ENCLOSED BY '{$table->enclosedBy}'".PHP_EOL;
+            }
+
+            if ($table->trailing) {
+                $inserts .= 'TRAILING NULLCOLS'.PHP_EOL;
+            }
+
+            $inserts .= '('.PHP_EOL;
+            $inserts .= $this->buildColumns($table->columns).PHP_EOL;
+            $inserts .= ')'.PHP_EOL;
         }
 
         return $inserts;
@@ -112,6 +116,6 @@ class ControlFileBuilder
 
     public function buildColumns(array $columns): string
     {
-        return implode(', ', $columns);
+        return implode(','.PHP_EOL, array_map(fn($column) => str_repeat(' ', 2).$column, $columns));
     }
 }

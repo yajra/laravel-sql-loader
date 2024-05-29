@@ -7,7 +7,13 @@ test('it can build a control file', function () {
     $loader = new SQLLoader(['skip=1', 'load=2']);
     $loader->inFile(__DIR__.'/../data/users.dat')
         ->as('users.ctl')
-        ->into('users', ['id', 'name', 'email']);
+        ->into(
+            table: 'users',
+            columns: ['id', 'name', 'email'],
+            terminatedBy: ',',
+            optionally: true,
+            enclosedBy: '"'
+        );
 
     $ctl = new ControlFileBuilder($loader);
     $controlFile = $ctl->build();
@@ -19,6 +25,12 @@ test('it can build a control file', function () {
         ->and($controlFile)->toContain("users.dis'")
         ->and($controlFile)->toContain('APPEND')
         ->and($controlFile)->toContain('INTO TABLE users')
-        ->and($controlFile)->toContain("FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'")
-        ->and($controlFile)->toContain('(id, name, email)');
+        ->and($controlFile)->toContain("FIELDS TERMINATED BY ','")
+        ->and($controlFile)->toContain('OPTIONALLY')
+        ->and($controlFile)->toContain("ENCLOSED BY '\"'")
+        ->and($controlFile)->toContain('(')
+        ->and($controlFile)->toContain('id,')
+        ->and($controlFile)->toContain('name,')
+        ->and($controlFile)->toContain('email')
+        ->and($controlFile)->toContain(')');
 });
