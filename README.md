@@ -10,10 +10,15 @@ A Laravel package that allows you to easily load data into Oracle database using
 
 ## Requirements
 
-- Oracle Instant Client
-- Oracle SQL Loader
-- Laravel 10.x or higher
-- Laravel OCI8 10.x or higher
+- [Oracle Instant Client with Tools Package](https://www.oracle.com/database/technologies/instant-client/macos-intel-x86-downloads.html)
+- [Laravel 10.x](https://laravel.com) or higher
+- [Laravel OCI8](https://yajrabox.com/docs/laravel-oci8) 10.x or higher
+
+## Prerequisites
+
+- Before you can use this package, you need to install the Oracle Instant Client with Tools Package. You can download the package from the [Oracle website](https://www.oracle.com/database/technologies/instant-client/macos-intel-x86-downloads.html). 
+- You should also take note of the path where the `sqlldr` executable is located.
+- Knowledge of how to use `sqlldr` is also required. You can read the documentation [here](https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/oracle-sql-loader.html#GUID-8D037494-07FA-4226-B507-E1B2ED10C144).
 
 ## Installation
 
@@ -23,33 +28,7 @@ You can install the package via composer:
 composer require yajra/laravel-sql-loader:^1.0
 ```
 
-## Usage
-
-Basic usage:
-
-```php
-$loader = Yajra\SQLLoader\SQLLoader::make();
-$loader->inFile(database_path('files/employees.csv'))
-    ->as('employees.ctl')
-    ->options(['skip=1'])
-    ->mode(Yajra\SQLLoader\Mode::TRUNCATE)
-    ->into(
-        table: 'employees', 
-        columns: [
-            'name',
-            'dept_id',
-        ],
-        terminatedBy: ',',
-        enclosedBy: '"',
-        trailing: true
-    )
-    ->disk('local')
-    ->execute();
-
-return nl2br($loader->logs());
-```
-
-## Example
+## Quick Start
 
 Create a CSV file named `employees.csv` inside `database/files` directory.
 
