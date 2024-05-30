@@ -1,16 +1,26 @@
 name: PHP Linting
-on: [push, pull_request]
+on: [ push, pull_request ]
 jobs:
   phplint:
+    strategy:
+      matrix:
+        php: [ 8.2 ]
+      fail-fast: false
+
     runs-on: ubuntu-latest
+    timeout-minutes: 8
+
     steps:
       - uses: actions/checkout@v4
+
       - name: "laravel-pint"
         uses: aglipanci/laravel-pint-action@2.0.0
         with:
           preset: laravel
           verboseMode: true
+
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "fix(cs): [ci-review] pint :bug:"
-
+          commit_author: 'GitHub Action <actions@github.com>'
+          commit_user_email: 'action@github.com'
