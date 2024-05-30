@@ -24,13 +24,20 @@ class ControlFileBuilder implements Stringable
     {
         $template = File::get($this->getStub());
 
-        return Str::of($template)
+        $sql = Str::of($template)
             ->replace('$OPTIONS', $this->options())
             ->replace('$FILES', $this->inputFiles())
             ->replace('$METHOD', $this->method())
             ->replace('$INSERTS', $this->inserts())
-            ->replace('$BEGINDATA', $this->beginData())
+            ->replace("\$BEGINDATA\n", $this->beginData())
             ->toString();
+
+        if ($this->loader->beginData) {
+            // remove last new line from the $sql when beginData is set.
+            $sql = substr($sql, 0, -1);
+        }
+
+        return $sql;
     }
 
     protected function getStub(): string
@@ -68,7 +75,7 @@ class ControlFileBuilder implements Stringable
         $sql = '';
         if ($this->loader->beginData) {
             $sql .= 'BEGINDATA'.PHP_EOL;
-            $sql .= $this->arrayToCsv($this->loader->beginData).PHP_EOL;
+            $sql .= $this->arrayToCsv($this->loader->beginData);
         }
 
         return $sql;
