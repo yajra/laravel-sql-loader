@@ -111,12 +111,12 @@ $loader->mode(Yajra\SQLLoader\Mode::TRUNCATE);
 
 You can set the table to load the data into using the `into` method. This method accepts the following parameters:
 
-- `table` - The table name.
-- `columns` - The columns to load.
-- `terminatedBy` - The terminated by character.
-- `enclosedBy` - The enclosed by character.
-- `trailing` - Set to true if the data is trailing.
-- `formatOptions` - The format options in array.
+- [`table`](https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/oracle-sql-loader-control-file-contents.html#GUID-9E95D9E3-C554-495C-9400-A0B0840DCF35) - Specifies the table into which you load data.
+- [`columns`](https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/oracle-sql-loader-field-list-contents.html#GUID-46A9380D-3BFD-49E4-9DD5-0AC5785A6DB9) - The field-list portion of a SQL*Loader control file provides information about fields being loaded.
+- [`terminatedBy`](https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/oracle-sql-loader-control-file-contents.html#GUID-D1762699-8154-40F6-90DE-EFB8EB6A9AB0) - The terminated by character.
+- [`enclosedBy`](https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/oracle-sql-loader-control-file-contents.html#GUID-D1762699-8154-40F6-90DE-EFB8EB6A9AB0) - The enclosed by character.
+- [`trailing`](https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/oracle-sql-loader-control-file-contents.html#GUID-717EBE8E-C972-4D2C-9E42-16440CF069AA) - set to `true` to configure SQL*Loader to treat missing columns as null columns.
+- [`formatOptions`](https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/oracle-sql-loader-control-file-contents.html#GUID-5740B2F9-C5C3-4D44-BB3F-81484417F02D) - Specifying Datetime Formats At the Table Level.
 
 ```php
 $loader->into('employees', ['name', 'dept_id']);
