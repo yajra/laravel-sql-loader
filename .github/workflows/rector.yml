@@ -2,12 +2,30 @@ name: RectoPHP
 on: [push, pull_request]
 jobs:
   rector:
-    name: Rector
+    strategy:
+      matrix:
+        php: [8.2]
+      fail-fast: false
+
     runs-on: ubuntu-latest
+    timeout-minutes: 8
+
     steps:
-      - uses: actions/checkout@v2
-      - name: Rector
-        uses: zingimmick/rector-action@0.0.2
-      - uses: stefanzweifel/git-auto-commit-action@v5
+      - uses: actions/checkout@v4
+
+      -
+        uses: shivammathur/setup-php@v2
+        with:
+          # PHP 8.2 is required, so Rector's code is PHP 8.2 compatible even after refactoring
+          php-version: 8.2
+          coverage: none
+
+      - run: composer install --no-progress --ansi
+      - run: bin/rector process --ansi
+
+      -
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "fix(rector): [ci-review] rectify :bug:"
+          commit_author: 'GitHub Action <actions@github.com>'
+          commit_user_email: 'action@github.com'
