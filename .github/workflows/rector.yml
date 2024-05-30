@@ -1,0 +1,13 @@
+name: RectoPHP
+on: [push, pull_request]
+jobs:
+  rector:
+    name: Rector
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Rector
+        uses: zingimmick/rector-action@0.0.2
+      - uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "fix(rector): [ci-review] rectify :bug:"
