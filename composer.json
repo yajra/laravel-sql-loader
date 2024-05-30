@@ -53,7 +53,25 @@
         }
     },
     "scripts": {
-        "docker": "docker run -d -p 49160:22 -p 49161:1521 deepdiver/docker-oracle-xe-11g"
+        "docker": "docker run -d -p 49160:22 -p 49161:1521 deepdiver/docker-oracle-xe-11g",
+        "pint": [
+            "./vendor/bin/pint"
+        ],
+        "stan": [
+            "./vendor/bin/phpstan analyse --memory-limit=2G --ansi --no-progress --no-interaction --configuration=phpstan.neon.dist"
+        ],
+        "rector": [
+            "./vendor/bin/rector"
+        ],
+        "test": [
+            "./vendor/bin/pest"
+        ],
+        "qa": [
+            "composer pint",
+            "composer rector",
+            "composer stan",
+            "composer test"
+        ]
     },
     "config": {
         "sort-packages": true,
