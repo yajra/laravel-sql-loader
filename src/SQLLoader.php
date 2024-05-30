@@ -35,6 +35,8 @@ class SQLLoader
 
     protected string $logs = '';
 
+    public array $beginData = [];
+
     public function __construct(public array $options = [])
     {
     }
@@ -280,5 +282,15 @@ class SQLLoader
         }
 
         return $this->result;
+    }
+
+    public function beginData(array $data): static
+    {
+        $this->inputFiles = [];
+        $this->inFile('*');
+
+        $this->beginData = $data;
+
+        return $this;
     }
 }

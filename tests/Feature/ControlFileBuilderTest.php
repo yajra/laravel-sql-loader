@@ -95,3 +95,27 @@ test('it can build table with formatting options', function () {
         ->and($controlFile)->toContain('TIMESTAMP WITH TIME ZONE "YYYY-MM-DD HH24:MI:SS TZH:TZM"')
         ->and($controlFile)->toContain('TIMESTAMP WITH LOCAL TIME ZONE "YYYY-MM-DD HH24:MI:SS"');
 });
+
+test('it can build using begin data', function () {
+    $loader = new SQLLoader(['skip=1', 'load=2']);
+    $loader->as('users.ctl')
+        ->into(
+            table: 'users',
+            columns: ['id', 'name', 'email'],
+        )
+        ->beginData([
+            ['1', 'name-1', 'email-1'],
+            ['2', 'name-2', 'email-2'],
+            ['3', 'name,-2', 'email"-2'],
+        ]);
+
+    $ctl = new ControlFileBuilder($loader);
+    $controlFile = $ctl->build();
+
+    expect($controlFile)->toBeString()
+        ->and($controlFile)->toContain('INFILE *')
+        ->and($controlFile)->toContain("BEGINDATA\n")
+        ->and($controlFile)->toContain('1,name-1,email-1')
+        ->and($controlFile)->toContain('2,name-2,email-2')
+        ->and($controlFile)->toContain('3,"name,-2","email""-2"');
+});
