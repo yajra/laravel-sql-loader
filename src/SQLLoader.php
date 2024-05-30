@@ -41,6 +41,9 @@ class SQLLoader
     {
     }
 
+    /**
+     * Set SQL Loader options.
+     */
     public function options(array $options): static
     {
         $this->options = $options;
@@ -48,6 +51,9 @@ class SQLLoader
         return $this;
     }
 
+    /**
+     * Define input file to load data from.
+     */
     public function inFile(
         string $path,
         ?string $badFile = null,
@@ -63,6 +69,9 @@ class SQLLoader
         return $this;
     }
 
+    /**
+     * Define mode to use.
+     */
     public function mode(Mode $mode): static
     {
         $this->mode = $mode;
@@ -70,6 +79,9 @@ class SQLLoader
         return $this;
     }
 
+    /**
+     * Define table to load data into.
+     */
     public function into(
         string $table,
         array $columns,
@@ -83,6 +95,9 @@ class SQLLoader
         return $this;
     }
 
+    /**
+     * Execute SQL Loader command.
+     */
     public function execute(): ProcessResult
     {
         if (! $this->tables) {
@@ -106,6 +121,9 @@ class SQLLoader
         return $this->result; // @phpstan-ignore-line
     }
 
+    /**
+     * Build SQL Loader command.
+     */
     protected function buildCommand(): string
     {
         $filesystem = $this->getDisk();
@@ -125,6 +143,9 @@ class SQLLoader
         return $command;
     }
 
+    /**
+     * Get the disk to use for control file.
+     */
     public function getDisk(): Filesystem
     {
         if ($this->disk) {
@@ -134,6 +155,9 @@ class SQLLoader
         return Storage::disk(config('sql-loader.disk', 'local'));
     }
 
+    /**
+     * Set the disk to use for control file.
+     */
     public function disk(string $disk): static
     {
         $this->disk = $disk;
@@ -141,6 +165,9 @@ class SQLLoader
         return $this;
     }
 
+    /**
+     * Get the control file name.
+     */
     protected function getControlFile(): string
     {
         if (! $this->controlFile) {
@@ -150,26 +177,41 @@ class SQLLoader
         return $this->controlFile;
     }
 
+    /**
+     * Build SQL Loader control file.
+     */
     public function buildControlFile(): string
     {
         return (new ControlFileBuilder($this))->build();
     }
 
+    /**
+     * Build TNS connection string.
+     */
     protected function buildTNS(): string
     {
         return TnsBuilder::make();
     }
 
+    /**
+     * Create a new SQL Loader instance.
+     */
     public static function make(array $options = []): SQLLoader
     {
         return new self($options);
     }
 
+    /**
+     * Get the SQL Loader binary path.
+     */
     public function getSqlLoaderBinary(): string
     {
         return config('sql-loader.sqlldr', 'sqlldr');
     }
 
+    /**
+     * Delete generated files after execution.
+     */
     protected function deleteGeneratedFiles(): void
     {
         if ($this->logPath && File::exists($this->logPath)) {
@@ -196,6 +238,9 @@ class SQLLoader
         }
     }
 
+    /**
+     * Set the control file name.
+     */
     public function as(string $controlFile): static
     {
         if (! Str::endsWith($controlFile, '.ctl')) {
@@ -207,6 +252,9 @@ class SQLLoader
         return $this;
     }
 
+    /**
+     * Set the log file path.
+     */
     public function logsTo(string $path): static
     {
         $this->logPath = $path;
@@ -214,6 +262,9 @@ class SQLLoader
         return $this;
     }
 
+    /**
+     * Check if SQL Loader execution was successful.
+     */
     public function successful(): bool
     {
         if (is_null($this->result)) {
@@ -223,6 +274,9 @@ class SQLLoader
         return $this->result->successful();
     }
 
+    /**
+     * Get the SQL Loader command, file path and result details.
+     */
     public function debug(): string
     {
         $debug = 'Command:'.PHP_EOL.$this->buildCommand().PHP_EOL.PHP_EOL;
@@ -237,6 +291,9 @@ class SQLLoader
         return $debug;
     }
 
+    /**
+     * Get the SQL Loader output.
+     */
     public function output(): string
     {
         if (is_null($this->result)) {
@@ -246,6 +303,9 @@ class SQLLoader
         return $this->result->output();
     }
 
+    /**
+     * Get the SQL Loader error output.
+     */
     public function errorOutput(): string
     {
         if (is_null($this->result)) {
@@ -255,6 +315,9 @@ class SQLLoader
         return $this->result->errorOutput();
     }
 
+    /**
+     * Set the flag to delete generated files after execution.
+     */
     public function deleteFilesAfterRun(bool $delete = true): static
     {
         $this->deleteFiles = $delete;
@@ -262,6 +325,9 @@ class SQLLoader
         return $this;
     }
 
+    /**
+     * Get the SQL Loader execution logs.
+     */
     public function logs(): string
     {
         if ($this->logs) {
@@ -275,6 +341,9 @@ class SQLLoader
         return 'No log file available';
     }
 
+    /**
+     * Get the SQL Loader process result.
+     */
     public function result(): ProcessResult
     {
         if (! $this->result) {
@@ -284,6 +353,9 @@ class SQLLoader
         return $this->result;
     }
 
+    /**
+     * Set the data to be loaded.
+     */
     public function beginData(array $data): static
     {
         $this->inputFiles = [];
