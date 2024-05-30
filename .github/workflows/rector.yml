@@ -21,7 +21,7 @@ jobs:
           coverage: none
 
       - run: composer install --no-progress --ansi --ignore-platform-reqs
-      - run: bin/rector process --ansi
+      - run: ./vendor/bin/rector process --ansi
 
       -
         uses: stefanzweifel/git-auto-commit-action@v5
