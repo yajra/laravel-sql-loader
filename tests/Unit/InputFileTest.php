@@ -31,3 +31,9 @@ test('it can build it\'s own sql string with discard max as string', function ()
 
     expect($inputFile->__toString())->toBe("INFILE 'path/to/file' BADFILE 'path/to/badfile' DISCARDFILE 'path/to/discardfile' DISCARDMAX 1");
 });
+
+test('it can build with os file proc clause', function () {
+    $inputFile = new InputFile('path/to/file', 'path/to/badfile', 'path/to/discardfile', '1', 'OS_FILE_PROC');
+
+    expect($inputFile->__toString())->toBe("INFILE 'path/to/file' \"OS_FILE_PROC\" BADFILE 'path/to/badfile' DISCARDFILE 'path/to/discardfile' DISCARDMAX 1");
+});
