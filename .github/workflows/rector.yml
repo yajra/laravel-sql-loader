@@ -20,7 +20,7 @@ jobs:
           php-version: 8.2
           coverage: none
 
-      - run: composer install --no-progress --ansi
+      - run: composer install --no-progress --ansi --ignore-platform-reqs
       - run: bin/rector process --ansi
 
       -
