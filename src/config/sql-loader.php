@@ -5,17 +5,17 @@ return [
      * Oracle database connection name.
      * ------------------------------------------------------
      */
-    'connection' => 'oracle',
+    'connection' => env('SQL_LOADER_CONNECTION', 'oracle'),
 
     /* ------------------------------------------------------
      * SQL Loader binary path.
      * ------------------------------------------------------
      */
-    'sqlldr' => 'sqlldr',
+    'sqlldr' => env('SQL_LOADER_PATH', '/usr/local/bin/sqlldr'),
 
     /* ------------------------------------------------------
      * Disk storage to store control files.
      * ------------------------------------------------------
      */
-    'disk' => 'local',
+    'disk' => env('SQL_LOADER_DISK', 'local'),
 ];
