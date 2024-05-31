@@ -117,6 +117,7 @@ You can set the table to load the data into using the `into` method. This method
 - [`enclosedBy`](https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/oracle-sql-loader-control-file-contents.html#GUID-D1762699-8154-40F6-90DE-EFB8EB6A9AB0) - The enclosed by character.
 - [`trailing`](https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/oracle-sql-loader-control-file-contents.html#GUID-717EBE8E-C972-4D2C-9E42-16440CF069AA) - set to `true` to configure SQL*Loader to treat missing columns as null columns.
 - [`formatOptions`](https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/oracle-sql-loader-control-file-contents.html#GUID-5740B2F9-C5C3-4D44-BB3F-81484417F02D) - Specifying Datetime Formats At the Table Level.
+- [`when`](https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/oracle-sql-loader-control-file-contents.html#GUID-227B995D-72A8-42EE-ADD9-350B8A229495) - Specifies a WHEN clause that is applied to all data records read from the data file.
 
 ```php
 $loader->into('employees', ['name', 'dept_id']);
