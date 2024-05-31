@@ -30,12 +30,12 @@ class TableDefinition implements Stringable
             $sql .= "OPTIONALLY ENCLOSED BY '{$this->enclosedBy}'".PHP_EOL;
         }
 
-        if ($this->trailing) {
-            $sql .= 'TRAILING NULLCOLS'.PHP_EOL;
-        }
-
         if ($this->formatOptions) {
             $sql .= implode(PHP_EOL, $this->formatOptions).PHP_EOL;
+        }
+
+        if ($this->trailing) {
+            $sql .= 'TRAILING NULLCOLS'.PHP_EOL;
         }
 
         $sql .= '('.PHP_EOL;
