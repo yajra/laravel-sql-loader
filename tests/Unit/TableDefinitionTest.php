@@ -17,7 +17,7 @@ test('it can build it\'s own sql string', function () {
     );
 
     assertEquals(
-        "INTO TABLE users\nFIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'\nTRAILING NULLCOLS\nDATE FORMAT \"YYYY-MM-DD\"\n(\n  id,\n  name,\n  email\n)\n",
+        "INTO TABLE users\nFIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'\nDATE FORMAT \"YYYY-MM-DD\"\nTRAILING NULLCOLS\n(\n  id,\n  name,\n  email\n)\n",
         $table
     );
 });
