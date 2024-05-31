@@ -88,9 +88,10 @@ class SQLLoader
         ?string $terminatedBy = ',',
         ?string $enclosedBy = '"',
         bool $trailing = false,
-        array $formatOptions = []
+        array $formatOptions = [],
+        ?string $when = null,
     ): static {
-        $this->tables[] = new TableDefinition($table, $columns, $terminatedBy, $enclosedBy, $trailing, $formatOptions);
+        $this->tables[] = new TableDefinition($table, $columns, $terminatedBy, $enclosedBy, $trailing, $formatOptions, $when);
 
         return $this;
     }

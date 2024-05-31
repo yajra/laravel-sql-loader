@@ -87,3 +87,16 @@ test('it can build it\'s own sql string with empty columns', function () {
         $table
     );
 });
+
+test('it can build with when clause', function () {
+    $table = new TableDefinition(
+        'users',
+        ['id', 'name', 'email'],
+        when: 'id > 0',
+    );
+
+    assertEquals(
+        "INTO TABLE users\nWHEN id > 0\n(\n  id,\n  name,\n  email\n)\n",
+        $table
+    );
+});

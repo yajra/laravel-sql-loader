@@ -14,13 +14,18 @@ class TableDefinition implements Stringable
         public ?string $terminatedBy = null,
         public ?string $enclosedBy = null,
         public bool $trailing = false,
-        public array $formatOptions = []
+        public array $formatOptions = [],
+        public ?string $when = null,
     ) {
     }
 
     public function __toString(): string
     {
         $sql = "INTO TABLE {$this->table}".PHP_EOL;
+
+        if ($this->when) {
+            $sql .= "WHEN {$this->when}".PHP_EOL;
+        }
 
         if ($this->terminatedBy) {
             $sql .= "FIELDS TERMINATED BY '{$this->terminatedBy}' ";
