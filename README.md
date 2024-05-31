@@ -154,6 +154,12 @@ You can execute the SQL Loader command using the `execute` method.
 $loader->execute();
 ```
 
+You can also set the execution timeout in seconds. Default is 3600 seconds / 1 hr.
+
+```php
+$loader->execute(60);
+```
+
 ### Execution Result
 
 You can check if the execution was successful using the `successfull` method.

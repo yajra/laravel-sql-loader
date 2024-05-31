@@ -99,7 +99,7 @@ class SQLLoader
     /**
      * Execute SQL Loader command.
      */
-    public function execute(): ProcessResult
+    public function execute(int $timeout = 3600): ProcessResult
     {
         if (! $this->tables) {
             throw new InvalidArgumentException('At least one table definition is required.');
@@ -109,7 +109,7 @@ class SQLLoader
             throw new InvalidArgumentException('Input file is required.');
         }
 
-        $this->result = Process::run($this->buildCommand());
+        $this->result = Process::timeout($timeout)->run($this->buildCommand());
 
         if ($this->deleteFiles) {
             if ($this->logPath && File::exists($this->logPath)) {
