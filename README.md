@@ -18,6 +18,14 @@ A Laravel package that allows you to easily load data into Oracle database using
 
 - Before you can use this package, you need to install the Oracle Instant Client with Tools Package. You can download the package from the [Oracle website](https://www.oracle.com/database/technologies/instant-client/macos-intel-x86-downloads.html). 
 - You should also take note of the path where the `sqlldr` executable is located.
+  - For example, if you installed the Oracle Instant Client with Tools Package in `/usr/local/oracle/instantclient_19_6`, the `sqlldr` executable will be located in `/usr/local/oracle/instantclient_19_6/sqlldr`.
+  - You can also add the path to the `sqlldr` executable to your system's PATH environment variable.
+  - You can also set the path to the `sqlldr` executable in the `.env` file using the `SQL_LOADER_PATH` key.
+  - You can also set the path to the `sqlldr` executable in the `config/sql-loader.php` file using the `sqlldr` key.
+  - You can symlink the `sqlldr` executable to `/usr/local/bin` using the following command:
+    ```bash
+    sudo ln -nfs /usr/local/oracle/instantclient_19_6/sqlldr /usr/local/bin/sqlldr
+    ```
 - Knowledge of how to use `sqlldr` is also required. You can read the documentation [here](https://docs.oracle.com/en/database/oracle/oracle-database/23/sutil/oracle-sql-loader.html#GUID-8D037494-07FA-4226-B507-E1B2ED10C144).
 
 ## Installation
