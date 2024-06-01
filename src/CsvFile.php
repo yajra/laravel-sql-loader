@@ -69,8 +69,6 @@ final class CsvFile
             $this->append(array_keys($fields));
         }
 
-        $this->append($fields);
-
         return $this;
     }
 
