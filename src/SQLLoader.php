@@ -8,6 +8,7 @@ use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\Process\ProcessResult;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
@@ -96,7 +97,7 @@ class SQLLoader
         ?string $when = null,
     ): static {
         if (empty($columns)) {
-            $columns = $this->defaultColumns;
+            $columns = $this->buildDefaultColumns($table, $columns);
         }
 
         if (! $formatOptions) {
@@ -388,7 +389,6 @@ class SQLLoader
     {
         $this->options(['skip=1']);
         $headers = CsvFile::make($this->inputFiles[0]->path, 'r')->getHeaders();
-        $headers = array_map(fn ($field) => strtoupper('"'.$field.'"'), $headers);
         $this->defaultColumns = $headers;
 
         return $this;
@@ -399,5 +399,45 @@ class SQLLoader
         $this->dateFormat = $format;
 
         return $this;
+    }
+
+    protected function buildDefaultColumns(string $table, array $columns): array
+    {
+        $columns = $this->defaultColumns;
+        $schemaColumns = collect(Schema::connection(config('sql-loader.connection'))->getColumns($table));
+
+        $dates = $schemaColumns->filter(function ($column) {
+            return in_array($column['type'], [
+                'DATE',
+                'DATETIME',
+                'TIMESTAMP',
+                'TIMESTAMP(6)',
+            ]);
+        })->pluck('name')->toArray();
+
+        $booleans = $schemaColumns->filter(function ($column) {
+            return $column['nullable'] === 'N' && $column['type'] === 'CHAR';
+        })->pluck('name')->toArray();
+
+        foreach ($columns as $key => $column) {
+            $column = strtoupper($column);
+
+            if (in_array($column, $dates)) {
+                $columns[$key] = "\"$column\" DATE";
+
+                continue;
+            }
+
+            if (in_array($column, $booleans)) {
+                $default = $schemaColumns->where('name', $column)->first()['default'];
+                $columns[$key] = "\"$column\" \"DECODE(:$column, '', $default, :$column)\"";
+
+                continue;
+            }
+
+            $columns[$key] = "\"$column\"";
+        }
+
+        return $columns;
     }
 }
