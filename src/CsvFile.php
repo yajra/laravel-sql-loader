@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Yajra\SQLLoader;
 
+use Illuminate\Support\Facades\File;
+
 final class CsvFile
 {
     /**
@@ -15,34 +17,35 @@ final class CsvFile
 
     public static function make(string $filename, string $mode): CsvFile
     {
-        if (! file_exists($filename)) {
-            $filename = self::create($filename);
-        }
+        $csv = self::create($filename);
 
-        $stream = fopen($filename, $mode);
+        $stream = fopen($csv, $mode);
 
         if ($stream === false) {
-            throw new \RuntimeException("Failed to open file [{$filename}].");
+            throw new \RuntimeException("Failed to open file [{$csv}].");
         }
 
-        return new self($filename, $stream);
+        return new self($csv, $stream);
     }
 
     public static function create(string $file): string
     {
-        $stream = fopen($file, 'w');
-        if ($stream === false) {
-            throw new \RuntimeException('Could not open file for writing: '.$file);
+        $directory = File::dirname($file);
+        if (! File::isDirectory($directory)) {
+            File::makeDirectory($directory, 0755, true, true);
         }
-        fclose($stream);
+
+        if (! File::exists($file)) {
+            File::append($file, '');
+        }
 
         return $file;
     }
 
     public static function blank(string $file): string
     {
-        if (file_exists($file)) {
-            unlink($file);
+        if (File::exists($file)) {
+            File::delete($file);
         }
 
         return self::create($file);
