@@ -49,7 +49,8 @@ Route::get('sql-loader', function () {
             ['Jane Doe', 2, now(), now()],
             ['John Doe', 1, now(), now()],
             ['Jane Doe', 2, now(), now()],
-        ]);
+        ])
+        ->close();
 
     $loader = Yajra\SQLLoader\SQLLoader::make();
     $loader->inFile(database_path('files/employees.csv'))
