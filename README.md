@@ -30,17 +30,7 @@ composer require yajra/laravel-sql-loader:^1.0
 
 ## Quick Start
 
-Create a CSV file named `employees.csv` inside `database/files` directory.
-
-```csv
-NAME,DEPT_ID
-John,1
-Jane,1
-"Jim, K",2
-Joe,2
-```
-
-Create a route to test the package.
+Below is a quick example of how to use the package:
 
 ```php
 Route::get('sql-loader', function () {
@@ -49,19 +39,26 @@ Route::get('sql-loader', function () {
         $table->id();
         $table->string('name');
         $table->integer('dept_id');
+        $table->timestamps();
     });
+
+    Yajra\SQLLoader\CsvFile::make(database_path('files/employees.csv'), 'w')
+        ->headers(['name', 'dept_id', 'created_at', 'updated_at'])
+        ->insert([
+            ['John Doe', 1, now(), now()],
+            ['Jane Doe', 2, now(), now()],
+            ['John Doe', 1, now(), now()],
+            ['Jane Doe', 2, now(), now()],
+        ]);
 
     $loader = Yajra\SQLLoader\SQLLoader::make();
     $loader->inFile(database_path('files/employees.csv'))
-        ->options(['skip=1'])
-        ->mode(Yajra\SQLLoader\Mode::TRUNCATE)
-        ->into('employees', [
-            'name',
-            'dept_id',
-        ])
+        ->dateFormat('YYYY-MM-DD HH24:MI:SS')
+        ->withHeaders()
+        ->into('employees')
         ->execute();
 
-    return nl2br($loader->logs());
+    return DB::table('employees')->get();
 });
 ```
 
