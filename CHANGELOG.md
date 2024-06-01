@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [v1.2.0](https://github.com/yajra/laravel-sql-loader/compare/v1.1.0...v1.2.0) - 2024-06-01
+
+- feat: add csv file helper class
+
 ## [v1.1.0](https://github.com/yajra/laravel-sql-loader/compare/v1.0.1...v1.1.0) - 2024-05-31
 
 - feat: add support for table when clause
