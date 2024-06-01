@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+## [v1.3.0](https://github.com/yajra/laravel-sql-loader/compare/v1.2.0...v1.3.0) - 2024-06-01
+
+- feat: dynamically build columns based on csv file header and table schema
+- feat: add support for default date formats
+- fix: column issue when name is reserved word
+- feat: set trailing nullcols as default behavior
+- feat: add withHeader method to skip csv header
+- fix: creating of CSV file when directory does not exist
+- fix: headers appending the content of the array
+
 ## [v1.2.0](https://github.com/yajra/laravel-sql-loader/compare/v1.1.0...v1.2.0) - 2024-06-01
 
 - feat: add csv file helper class
