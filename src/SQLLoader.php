@@ -89,7 +89,7 @@ class SQLLoader
         array $columns = [],
         ?string $terminatedBy = ',',
         ?string $enclosedBy = '"',
-        bool $trailing = false,
+        bool $trailing = true,
         array $formatOptions = [],
         ?string $when = null,
     ): static {
