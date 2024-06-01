@@ -111,6 +111,9 @@ final class CsvFile
         return $contents;
     }
 
+    /**
+     * @param  null|int<0, max>  $length
+     */
     public function getHeaders(?int $length = null): array
     {
         $headers = fgetcsv($this->stream, $length);
