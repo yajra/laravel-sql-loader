@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [v1.3.1](https://github.com/yajra/laravel-sql-loader/compare/v1.3.0...v1.3.1) - 2024-06-01
+
+- fix: set default CsvFile mode to `w`
+
 ## [v1.3.0](https://github.com/yajra/laravel-sql-loader/compare/v1.2.0...v1.3.0) - 2024-06-01
 
 - feat: dynamically build columns based on csv file header and table schema
