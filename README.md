@@ -72,6 +72,15 @@ The default execution mode is `Mode::APPEND`. The package supports the following
 - `Yajra\SQLLoader\Mode::REPLACE` - Replace data in table.
 - `Yajra\SQLLoader\Mode::TRUNCATE` - Truncate table then insert data.
 
+## Date Formats
+
+The SQL*Loader default date format is `YYYY-MM-DD"T"HH24:MI:SS."000000Z"` to match Laravel's model date serialization. 
+You can change the date format using the `dateFormat` method.
+
+```php
+$loader->dateFormat('YYYY-MM-DD HH24:MI:SS');
+```
+
 ## Available Methods
 
 ### Options
