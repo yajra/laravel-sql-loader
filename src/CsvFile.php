@@ -66,7 +66,7 @@ final class CsvFile
     public function headers(array $fields): CsvFile
     {
         if ($this->isEmpty()) {
-            $this->append(array_keys($fields));
+            $this->append($fields);
         }
 
         return $this;
