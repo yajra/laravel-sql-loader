@@ -15,7 +15,21 @@ final class CsvFile
     {
     }
 
-    public static function make(string $filename, string $mode): CsvFile
+    /**
+     * A list of possible modes. The default is 'w' (open for writing).:
+     *
+     * 'r' - Open for reading only; place the file pointer at the beginning of the file.
+     * 'r+' - Open for reading and writing; place the file pointer at the beginning of the file.
+     * 'w' - Open for writing only; place the file pointer at the beginning of the file and truncate the file to zero length. If the file does not exist, attempt to create it.
+     * 'w+' - Open for reading and writing; place the file pointer at the beginning of the file and truncate the file to zero length. If the file does not exist, attempt to create it.
+     * 'a' - Open for writing only; place the file pointer at the end of the file. If the file does not exist, attempt to create it.
+     * 'a+' - Open for reading and writing; place the file pointer at the end of the file. If the file does not exist, attempt to create it.
+     * 'x' - Create and open for writing only; place the file pointer at the beginning of the file. If the file already exists, the fopen call will fail by returning false and generating an error of level E_WARNING. If the file does not exist, attempt to create it. This is equivalent to specifying O_EXCL|O_CREAT flags for the underlying open(2) system call.
+     * 'x+' - Create and open for reading and writing; place the file pointer at the beginning of the file. If the file already exists, the fopen call will fail by returning false and generating an error of level E_WARNING. If the file does not exist, attempt to create it. This is equivalent to specifying O_EXCL|O_CREAT flags for the underlying open(2) system call.
+     *
+     * @see https://www.php.net/manual/en/function.fopen.php
+     */
+    public static function make(string $filename, string $mode = 'w'): CsvFile
     {
         $csv = self::create($filename);
 
@@ -40,6 +54,18 @@ final class CsvFile
         }
 
         return $file;
+    }
+
+    public function append(
+        array $fields,
+        string $separator = ',',
+        string $enclosure = '"',
+        string $escape = '\\',
+        string $eol = PHP_EOL
+    ): CsvFile {
+        fputcsv($this->stream, $fields, $separator, $enclosure, $escape, $eol);
+
+        return $this;
     }
 
     public static function blank(string $file): string
@@ -77,18 +103,6 @@ final class CsvFile
         clearstatcache(true, $this->file);
 
         return filesize($this->file) === 0;
-    }
-
-    public function append(
-        array $fields,
-        string $separator = ',',
-        string $enclosure = '"',
-        string $escape = '\\',
-        string $eol = PHP_EOL
-    ): CsvFile {
-        fputcsv($this->stream, $fields, $separator, $enclosure, $escape, $eol);
-
-        return $this;
     }
 
     public function insert(array $updates): CsvFile
