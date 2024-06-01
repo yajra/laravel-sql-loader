@@ -21,6 +21,8 @@ class SQLLoader
     /** @var TableDefinition[] */
     public array $tables = [];
 
+    protected array $defaultColumns = [];
+
     public Mode $mode = Mode::APPEND;
 
     public ?string $controlFile = null;
@@ -84,13 +86,17 @@ class SQLLoader
      */
     public function into(
         string $table,
-        array $columns,
+        array $columns = [],
         ?string $terminatedBy = ',',
         ?string $enclosedBy = '"',
         bool $trailing = false,
         array $formatOptions = [],
         ?string $when = null,
     ): static {
+        if (empty($columns)) {
+            $columns = $this->defaultColumns;
+        }
+
         $this->tables[] = new TableDefinition($table, $columns, $terminatedBy, $enclosedBy, $trailing, $formatOptions, $when);
 
         return $this;
@@ -363,6 +369,14 @@ class SQLLoader
         $this->inFile('*');
 
         $this->beginData = $data;
+
+        return $this;
+    }
+
+    public function withHeaders(): static
+    {
+        $this->options(['skip' => 1]);
+        $this->defaultColumns = CsvFile::make($this->inputFiles[0]->path, 'r')->getHeaders();
 
         return $this;
     }
