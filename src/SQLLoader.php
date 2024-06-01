@@ -39,6 +39,8 @@ class SQLLoader
 
     public array $beginData = [];
 
+    protected string $dateFormat = 'YYYY-MM-DD"T"HH24:MI:SS."000000Z"';
+
     public function __construct(public array $options = [])
     {
     }
@@ -95,6 +97,15 @@ class SQLLoader
     ): static {
         if (empty($columns)) {
             $columns = $this->defaultColumns;
+        }
+
+        if (! $formatOptions) {
+            $formatOptions = [
+                "DATE FORMAT '".$this->dateFormat."'",
+                "TIMESTAMP FORMAT '".$this->dateFormat."'",
+                "TIMESTAMP WITH TIME ZONE '".$this->dateFormat."'",
+                "TIMESTAMP WITH LOCAL TIME ZONE '".$this->dateFormat."'",
+            ];
         }
 
         $this->tables[] = new TableDefinition($table, $columns, $terminatedBy, $enclosedBy, $trailing, $formatOptions, $when);
@@ -379,6 +390,13 @@ class SQLLoader
         $headers = CsvFile::make($this->inputFiles[0]->path, 'r')->getHeaders();
         $headers = array_map(fn ($field) => strtoupper('"'.$field.'"'), $headers);
         $this->defaultColumns = $headers;
+
+        return $this;
+    }
+
+    public function dateFormat(string $format): static
+    {
+        $this->dateFormat = $format;
 
         return $this;
     }
