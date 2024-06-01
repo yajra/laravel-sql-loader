@@ -110,4 +110,15 @@ final class CsvFile
 
         return $contents;
     }
+
+    public function getHeaders(?int $length = null): array
+    {
+        $headers = fgetcsv($this->stream, $length);
+
+        if ($headers === false) {
+            return [];
+        }
+
+        return $headers;
+    }
 }
