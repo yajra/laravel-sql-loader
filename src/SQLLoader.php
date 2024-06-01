@@ -375,7 +375,7 @@ class SQLLoader
 
     public function withHeaders(): static
     {
-        $this->options(['skip' => 1]);
+        $this->options(['skip=1']);
         $this->defaultColumns = CsvFile::make($this->inputFiles[0]->path, 'r')->getHeaders();
 
         return $this;
