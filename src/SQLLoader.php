@@ -406,21 +406,17 @@ class SQLLoader
         $columns = $this->defaultColumns;
         $schemaColumns = collect(Schema::connection(config('sql-loader.connection'))->getColumns($table));
 
-        $dates = $schemaColumns->filter(function ($column) {
-            return in_array($column['type'], [
-                'DATE',
-                'DATETIME',
-                'TIMESTAMP',
-                'TIMESTAMP(6)',
-            ]);
-        })->pluck('name')->toArray();
+        $dates = $schemaColumns->filter(fn ($column) => in_array($column['type'], [
+            'DATE',
+            'DATETIME',
+            'TIMESTAMP',
+            'TIMESTAMP(6)',
+        ]))->pluck('name')->toArray();
 
-        $booleans = $schemaColumns->filter(function ($column) {
-            return $column['nullable'] === 'N' && $column['type'] === 'CHAR';
-        })->pluck('name')->toArray();
+        $booleans = $schemaColumns->filter(fn ($column) => $column['nullable'] === 'N' && $column['type'] === 'CHAR')->pluck('name')->toArray();
 
         foreach ($columns as $key => $column) {
-            $column = strtoupper($column);
+            $column = strtoupper((string) $column);
 
             if (in_array($column, $dates)) {
                 $columns[$key] = "\"$column\" DATE";
