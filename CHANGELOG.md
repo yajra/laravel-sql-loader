@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [v1.6.0](https://github.com/yajra/laravel-sql-loader/compare/v1.5.0...v1.6.0) - 2024-06-02
+
+- feat: add support for wildcard in file path
+- feat: createColumnsFromHeaders api added
+
 ## [v1.5.0](https://github.com/yajra/laravel-sql-loader/compare/v1.4.0...v1.5.0) - 2024-06-02
 
 - fix: build columns using the latest schema get columns builder
