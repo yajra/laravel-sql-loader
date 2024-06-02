@@ -170,6 +170,33 @@ $loader->inFile(database_path('files/users.csv'))
     ->execute();
 ```
 
+### Wildcard Path with Headers
+
+When using a wildcard path, the first file is assumed to contain the headers. The succeeding files should not have headers or it will be reported as a bad record.
+
+```php
+$loader->inFile(database_path('files/*.csv'))
+    ->withHeaders()
+    ->mode(Yajra\SQLLoader\Mode::TRUNCATE)
+    ->into('employees')
+    ->execute();
+```
+
+- employees-1.csv
+
+```csv
+name,dept_id
+John Doe,1
+Jane Doe,2
+```
+
+- employees-2.csv
+
+```csv
+John Doe,1
+Jane Doe,2
+```
+
 ### Connection
 
 You can set the connection name to use for the SQL*Loader command using the `connection` method.
