@@ -155,7 +155,25 @@ test('it can detect BOOLEAN columns and set the default value if empty', functio
     assertStringContainsString("\"EMAIL\",\n", $controlFile);
     assertStringContainsString('"PHONE" FILLER', $controlFile);
     assertStringContainsString('"CREATED_AT" DATE', $controlFile);
-    assertStringContainsString("\"IS_ACTIVE\" \"DECODE(:is_active, '', '1', :is_active)\"\n", $controlFile);
+    assertStringContainsString("\"IS_ACTIVE\" \"DECODE(:is_active, '', '1', :is_active)\"", $controlFile);
+});
+
+test('it can detect BOOLEAN columns and set the default value to 0 if no default was defined', function () {
+    Process::fake();
+
+    $loader = new SQLLoader();
+    $loader->inFile(__DIR__.'/../data/filler.dat')
+        ->as('users.ctl')
+        ->withHeaders()
+        ->into('users_bool_no_default')
+        ->execute();
+
+    $controlFile = $loader->buildControlFile();
+    assertStringContainsString("\"NAME\",\n", $controlFile);
+    assertStringContainsString("\"EMAIL\",\n", $controlFile);
+    assertStringContainsString('"PHONE" FILLER', $controlFile);
+    assertStringContainsString('"CREATED_AT" DATE', $controlFile);
+    assertStringContainsString("\"IS_ACTIVE\" \"DECODE(:is_active, '', '0', :is_active)\"", $controlFile);
 });
 
 test('it accepts withHeader on input file with wildcard', function () {

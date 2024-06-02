@@ -103,7 +103,7 @@ class SQLLoader
         ]))->pluck('name')->toArray();
 
         $booleans = $schemaColumns->filter(
-            fn ($column) => $column['nullable'] === false && $column['type'] === 'char'
+            fn ($column) => $column['nullable'] === false && $column['type'] === 'char' && $column['length'] === 1
         )->pluck('name')->toArray();
 
         foreach ($columns as $key => $column) {
@@ -117,6 +117,7 @@ class SQLLoader
 
             if (in_array($column, $booleans)) {
                 $default = trim((string) $schemaColumns->where('name', $column)->first()['default']);
+                $default = $default ?: "'0'"; // set value to 0 if default is empty since column is not nullable
                 $columns[$key] = "{$escapedColumn} \"DECODE(:{$column}, '', {$default}, :{$column})\"";
 
                 continue;
