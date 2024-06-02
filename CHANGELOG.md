@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [v1.6.1](https://github.com/yajra/laravel-sql-loader/compare/v1.6.0...v1.6.1) - 2024-06-02
+
+- fix: withHeaders when using wildcard path
+
 ## [v1.6.0](https://github.com/yajra/laravel-sql-loader/compare/v1.5.0...v1.6.0) - 2024-06-02
 
 - feat: add support for wildcard in file path
