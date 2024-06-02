@@ -438,7 +438,16 @@ class SQLLoader
     public function withHeaders(): static
     {
         $this->options(['skip=1']);
-        $headers = CsvFile::make($this->inputFiles[0]->path, 'r')->getHeaders();
+
+        $path = $this->inputFiles[0]->path;
+        if (Str::contains($path, ['*', '?'])) {
+            $files = File::allFiles(dirname($path));
+
+            $headers = CsvFile::make($files[0]->getPathname(), 'r')->getHeaders();
+        } else {
+            $headers = CsvFile::make($this->inputFiles[0]->path, 'r')->getHeaders();
+        }
+
         $this->defaultColumns = $headers;
 
         return $this;
