@@ -1,4 +1,4 @@
-# Oracle SQL Loader for Laravel
+# Oracle SQL*Loader for Laravel
 
 [![Continuous Integration](https://github.com/yajra/laravel-sql-loader/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/yajra/laravel-sql-loader/actions/workflows/continuous-integration.yml)
 [![Static Analysis](https://github.com/yajra/laravel-sql-loader/actions/workflows/static-analysis.yml/badge.svg)](https://github.com/yajra/laravel-sql-loader/actions/workflows/static-analysis.yml)
@@ -101,7 +101,7 @@ $loader->options(['skip=1', 'load=1000']);
 
 ### Input File(/s)
 
-You can set the input file to use for the SQL Loader command using the `inFile` method.
+You can set the input file to use for the SQL*Loader command using the `inFile` method.
 
 ```php
 $loader->inFile(database_path('files/employees.csv'));
@@ -172,7 +172,7 @@ $loader->inFile(database_path('files/users.csv'))
 
 ### Connection
 
-You can set the connection name to use for the SQL Loader command using the `connection` method.
+You can set the connection name to use for the SQL*Loader command using the `connection` method.
 
 ```php
 $loader->connection('oracle');
@@ -204,7 +204,7 @@ $loader->as('employees.ctl');
 
 ### Execute
 
-You can execute the SQL Loader command using the `execute` method.
+You can execute the SQL*Loader command using the `execute` method.
 
 ```php
 $loader->execute();
@@ -264,15 +264,15 @@ php artisan vendor:publish --provider="Yajra\SQLLoader\SQLLoaderServiceProvider"
 
 ### Connection Config
 
-You can set the connection name to use for the SQL Loader command.
+You can set the connection name to use for the SQL*Loader command.
 
 ```php
 'connection' => env('SQL_LOADER_CONNECTION', 'oracle'),
 ```
 
-### SQL Loader Path Config
+### SQL*Loader Path Config
 
-You can set the path to the SQL Loader executable.
+You can set the path to the SQL*Loader executable.
 
 ```php
 'sqlldr' => env('SQL_LOADER_PATH', '/usr/local/bin/sqlldr'),
