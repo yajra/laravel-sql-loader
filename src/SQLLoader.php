@@ -70,8 +70,8 @@ class SQLLoader
         array $formatOptions = [],
         ?string $when = null,
     ): static {
-        if (empty($columns)) {
-            $columns = $this->buildDefaultColumns($table, $columns);
+        if (! $columns && $this->defaultColumns) {
+            $columns = $this->createColumnsFromHeaders($table, $this->defaultColumns);
         }
 
         if (! $formatOptions) {
@@ -90,9 +90,9 @@ class SQLLoader
         return $this;
     }
 
-    protected function buildDefaultColumns(string $table, array $columns): array
+    public function createColumnsFromHeaders(string $table, array $columns): array
     {
-        $columns = array_map('strtolower', $this->defaultColumns);
+        $columns = array_map('strtolower', $columns);
         $schemaColumns = collect(Schema::connection(config('sql-loader.connection'))->getColumns($table));
 
         $dates = $schemaColumns->filter(fn ($column) => in_array($column['type'], [
