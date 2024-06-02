@@ -122,3 +122,20 @@ test('it can use another database connection', function () {
         return str_contains((string) $process->command, "sqlldr userid={$username}/{$password}@{$host}:{$port}/{$database} control={$controlFile}");
     });
 });
+
+test('it can detect FILLER and DATE columns', function () {
+    Process::fake();
+
+    $loader = new SQLLoader();
+    $loader->inFile(__DIR__.'/../data/filler.dat')
+        ->as('users.ctl')
+        ->withHeaders()
+        ->into('users')
+        ->execute();
+
+    $controlFile = $loader->buildControlFile();
+    assertStringContainsString("\"NAME\",\n", $controlFile);
+    assertStringContainsString("\"EMAIL\",\n", $controlFile);
+    assertStringContainsString('"PHONE" FILLER', $controlFile);
+    assertStringContainsString('"CREATED_AT" DATE', $controlFile);
+});

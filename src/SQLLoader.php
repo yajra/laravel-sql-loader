@@ -122,6 +122,9 @@ class SQLLoader
                 continue;
             }
 
+            if (! $schemaColumns->contains('name', $column)) {
+                $columns[$key] = "{$escapedColumn} FILLER";
+
                 continue;
             }
 
