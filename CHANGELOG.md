@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [v1.5.0](https://github.com/yajra/laravel-sql-loader/compare/v1.4.0...v1.5.0) - 2024-06-02
+
+- fix: build columns using the latest schema get columns builder
+- feat: automatically detects filler columns
+- tests: boolean fields
+
 ## [v1.4.0](https://github.com/yajra/laravel-sql-loader/compare/v1.3.1...v1.4.0) - 2024-06-02
 
 - feat: add ability to set the database connection
