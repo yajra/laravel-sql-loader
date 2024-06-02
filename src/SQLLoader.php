@@ -83,42 +83,49 @@ class SQLLoader
             ];
         }
 
-        $this->tables[] = new TableDefinition($table, $columns, $terminatedBy, $enclosedBy, $trailing, $formatOptions, $when);
+        $this->tables[] = new TableDefinition(
+            $table, $columns, $terminatedBy, $enclosedBy, $trailing, $formatOptions, $when
+        );
 
         return $this;
     }
 
     protected function buildDefaultColumns(string $table, array $columns): array
     {
-        $columns = $this->defaultColumns;
+        $columns = array_map('strtolower', $this->defaultColumns);
         $schemaColumns = collect(Schema::connection(config('sql-loader.connection'))->getColumns($table));
 
         $dates = $schemaColumns->filter(fn ($column) => in_array($column['type'], [
-            'DATE',
-            'DATETIME',
-            'TIMESTAMP',
-            'TIMESTAMP(6)',
+            'date',
+            'datetime',
+            'timestamp',
+            'timestamp(6)',
         ]))->pluck('name')->toArray();
 
-        $booleans = $schemaColumns->filter(fn ($column) => $column['nullable'] === 'N' && $column['type'] === 'CHAR')->pluck('name')->toArray();
+        $booleans = $schemaColumns->filter(
+            fn ($column) => $column['nullable'] === false && $column['type'] === 'char'
+        )->pluck('name')->toArray();
 
         foreach ($columns as $key => $column) {
-            $column = strtoupper((string) $column);
+            $escapedColumn = '"'.strtoupper((string) $column).'"';
 
             if (in_array($column, $dates)) {
-                $columns[$key] = "\"$column\" DATE";
+                $columns[$key] = "{$escapedColumn} DATE";
 
                 continue;
             }
 
             if (in_array($column, $booleans)) {
                 $default = $schemaColumns->where('name', $column)->first()['default'];
-                $columns[$key] = "\"$column\" \"DECODE(:$column, '', $default, :$column)\"";
+                $columns[$key] = "{$escapedColumn} \"DECODE(:$column, '', $default, :$column)\"";
 
                 continue;
             }
 
-            $columns[$key] = "\"$column\"";
+                continue;
+            }
+
+            $columns[$key] = "{$escapedColumn}";
         }
 
         return $columns;
@@ -235,6 +242,11 @@ class SQLLoader
     public static function make(array $options = []): SQLLoader
     {
         return new self($options);
+    }
+
+    public function getConnection(): string
+    {
+        return $this->connection ?? config('sql-loader.connection', 'oracle');
     }
 
     /**
@@ -444,10 +456,5 @@ class SQLLoader
         $this->dateFormat = $format;
 
         return $this;
-    }
-
-    public function getConnection(): string
-    {
-        return $this->connection ?? config('sql-loader.connection', 'oracle');
     }
 }
