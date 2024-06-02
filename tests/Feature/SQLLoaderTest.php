@@ -100,3 +100,25 @@ test('it accepts multiple input files', function () {
         return str_contains((string) $process->command, "sqlldr userid={$tns} control={$controlFile}");
     });
 });
+
+test('it can use another database connection', function () {
+    Process::fake();
+
+    $loader = new SQLLoader(['skip=1']);
+    $loader->inFile(__DIR__.'/../data/users.dat')
+        ->as('users.ctl')
+        ->connection('mysql')
+        ->into('users', ['id', 'name', 'email'])
+        ->execute();
+
+    Process::assertRan(function (PendingProcess $process, ProcessResult $result) {
+        $username = config('database.connections.mysql.username');
+        $password = config('database.connections.mysql.password');
+        $host = config('database.connections.mysql.host');
+        $port = config('database.connections.mysql.port');
+        $database = config('database.connections.mysql.database');
+        $controlFile = storage_path('app/users.ctl');
+
+        return str_contains((string) $process->command, "sqlldr userid={$username}/{$password}@{$host}:{$port}/{$database} control={$controlFile}");
+    });
+});

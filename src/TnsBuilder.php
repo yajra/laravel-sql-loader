@@ -6,9 +6,9 @@ namespace Yajra\SQLLoader;
 
 class TnsBuilder
 {
-    public static function make(): string
+    public static function make(?string $connection = null): string
     {
-        $connection = config('sql-loader.connection', 'oracle');
+        $connection ??= config('sql-loader.connection', 'oracle');
         $username = config('database.connections.'.$connection.'.username');
         $password = config('database.connections.'.$connection.'.password');
         $host = config('database.connections.'.$connection.'.host');

@@ -159,11 +159,23 @@ Yajra\SQLLoader\CsvFile::make(database_path('files/users.csv'), 'w')
 
 #### Loading CSV File with Headers
 
+Load users from `oracle` to `backup` database connection.
+
 ```php
 $loader->inFile(database_path('files/users.csv'))
     ->withHeaders()
+    ->mode(Yajra\SQLLoader\Mode::TRUNCATE)
+    ->connection('backup')
     ->into('users')
     ->execute();
+```
+
+### Connection
+
+You can set the connection name to use for the SQL Loader command using the `connection` method.
+
+```php
+$loader->connection('oracle');
 ```
 
 ### Disk

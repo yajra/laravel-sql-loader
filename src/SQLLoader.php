@@ -22,11 +22,15 @@ class SQLLoader
     /** @var TableDefinition[] */
     public array $tables = [];
 
-    protected array $defaultColumns = [];
-
     public Mode $mode = Mode::APPEND;
 
     public ?string $controlFile = null;
+
+    public array $beginData = [];
+
+    public ?string $connection = null;
+
+    protected array $defaultColumns = [];
 
     protected ?string $disk = null;
 
@@ -38,40 +42,10 @@ class SQLLoader
 
     protected string $logs = '';
 
-    public array $beginData = [];
-
     protected string $dateFormat = 'YYYY-MM-DD"T"HH24:MI:SS."000000Z"';
 
     public function __construct(public array $options = [])
     {
-    }
-
-    /**
-     * Set SQL Loader options.
-     */
-    public function options(array $options): static
-    {
-        $this->options = $options;
-
-        return $this;
-    }
-
-    /**
-     * Define input file to load data from.
-     */
-    public function inFile(
-        string $path,
-        ?string $badFile = null,
-        ?string $discardFile = null,
-        ?string $discardMax = null
-    ): static {
-        if (! File::exists($path) && $path !== '*') {
-            throw new InvalidArgumentException("File [{$path}] does not exist.");
-        }
-
-        $this->inputFiles[] = new InputFile($path, $badFile, $discardFile, $discardMax);
-
-        return $this;
     }
 
     /**
@@ -110,6 +84,49 @@ class SQLLoader
         }
 
         $this->tables[] = new TableDefinition($table, $columns, $terminatedBy, $enclosedBy, $trailing, $formatOptions, $when);
+
+        return $this;
+    }
+
+    protected function buildDefaultColumns(string $table, array $columns): array
+    {
+        $columns = $this->defaultColumns;
+        $schemaColumns = collect(Schema::connection(config('sql-loader.connection'))->getColumns($table));
+
+        $dates = $schemaColumns->filter(fn ($column) => in_array($column['type'], [
+            'DATE',
+            'DATETIME',
+            'TIMESTAMP',
+            'TIMESTAMP(6)',
+        ]))->pluck('name')->toArray();
+
+        $booleans = $schemaColumns->filter(fn ($column) => $column['nullable'] === 'N' && $column['type'] === 'CHAR')->pluck('name')->toArray();
+
+        foreach ($columns as $key => $column) {
+            $column = strtoupper((string) $column);
+
+            if (in_array($column, $dates)) {
+                $columns[$key] = "\"$column\" DATE";
+
+                continue;
+            }
+
+            if (in_array($column, $booleans)) {
+                $default = $schemaColumns->where('name', $column)->first()['default'];
+                $columns[$key] = "\"$column\" \"DECODE(:$column, '', $default, :$column)\"";
+
+                continue;
+            }
+
+            $columns[$key] = "\"$column\"";
+        }
+
+        return $columns;
+    }
+
+    public function connection(string $connection): static
+    {
+        $this->connection = $connection;
 
         return $this;
     }
@@ -209,7 +226,7 @@ class SQLLoader
      */
     protected function buildTNS(): string
     {
-        return TnsBuilder::make();
+        return TnsBuilder::make($this->getConnection());
     }
 
     /**
@@ -385,11 +402,39 @@ class SQLLoader
         return $this;
     }
 
+    /**
+     * Define input file to load data from.
+     */
+    public function inFile(
+        string $path,
+        ?string $badFile = null,
+        ?string $discardFile = null,
+        ?string $discardMax = null
+    ): static {
+        if (! File::exists($path) && $path !== '*') {
+            throw new InvalidArgumentException("File [{$path}] does not exist.");
+        }
+
+        $this->inputFiles[] = new InputFile($path, $badFile, $discardFile, $discardMax);
+
+        return $this;
+    }
+
     public function withHeaders(): static
     {
         $this->options(['skip=1']);
         $headers = CsvFile::make($this->inputFiles[0]->path, 'r')->getHeaders();
         $this->defaultColumns = $headers;
+
+        return $this;
+    }
+
+    /**
+     * Set SQL Loader options.
+     */
+    public function options(array $options): static
+    {
+        $this->options = $options;
 
         return $this;
     }
@@ -401,39 +446,8 @@ class SQLLoader
         return $this;
     }
 
-    protected function buildDefaultColumns(string $table, array $columns): array
+    public function getConnection(): string
     {
-        $columns = $this->defaultColumns;
-        $schemaColumns = collect(Schema::connection(config('sql-loader.connection'))->getColumns($table));
-
-        $dates = $schemaColumns->filter(fn ($column) => in_array($column['type'], [
-            'DATE',
-            'DATETIME',
-            'TIMESTAMP',
-            'TIMESTAMP(6)',
-        ]))->pluck('name')->toArray();
-
-        $booleans = $schemaColumns->filter(fn ($column) => $column['nullable'] === 'N' && $column['type'] === 'CHAR')->pluck('name')->toArray();
-
-        foreach ($columns as $key => $column) {
-            $column = strtoupper((string) $column);
-
-            if (in_array($column, $dates)) {
-                $columns[$key] = "\"$column\" DATE";
-
-                continue;
-            }
-
-            if (in_array($column, $booleans)) {
-                $default = $schemaColumns->where('name', $column)->first()['default'];
-                $columns[$key] = "\"$column\" \"DECODE(:$column, '', $default, :$column)\"";
-
-                continue;
-            }
-
-            $columns[$key] = "\"$column\"";
-        }
-
-        return $columns;
+        return $this->connection ?? config('sql-loader.connection', 'oracle');
     }
 }
