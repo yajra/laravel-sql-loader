@@ -138,6 +138,34 @@ You can set the table to load the data into using the `into` method. This method
 $loader->into('employees', ['name', 'dept_id']);
 ```
 
+### With Headers
+
+Using `withHeaders` will skip the first row of the CSV file. 
+
+> **IMPORTANT** 
+> This method assumes that the headers are the same as the columns.
+> If the headers are different from the columns, you should define the `columns` in the `into` method.
+> This works well with the Eloquent Collection as the data source and saving it to a CSV file for bulk import.
+
+#### Building a CSV File from Eloquent Collection
+
+```php
+$users = User::all();
+Yajra\SQLLoader\CsvFile::make(database_path('files/users.csv'), 'w')
+    ->headers(array_keys($users->first()->toArray()))
+    ->insert($users->toArray())
+    ->close();
+```
+
+#### Loading CSV File with Headers
+
+```php
+$loader->inFile(database_path('files/users.csv'))
+    ->withHeaders()
+    ->into('users')
+    ->execute();
+```
+
 ### Disk
 
 You can set the disk to use for the control file using the `disk` method.
