@@ -37,3 +37,13 @@ test('it can build with os file proc clause', function () {
 
     expect($inputFile->__toString())->toBe("INFILE 'path/to/file' \"OS_FILE_PROC\" BADFILE 'path/to/badfile' DISCARDFILE 'path/to/discardfile' DISCARDMAX 1");
 });
+
+test('it accepts wildcard in file path', function () {
+    $inputFile = new InputFile('path/to/chunk-*.dat');
+
+    expect($inputFile->__toString())->toBe("INFILE 'path/to/chunk-*.dat'");
+
+    $inputFile = new InputFile('path/to/chunk-?.dat');
+
+    expect($inputFile->__toString())->toBe("INFILE 'path/to/chunk-?.dat'");
+});

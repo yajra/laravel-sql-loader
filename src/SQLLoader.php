@@ -426,7 +426,7 @@ class SQLLoader
         ?string $discardFile = null,
         ?string $discardMax = null
     ): static {
-        if (! File::exists($path) && $path !== '*') {
+        if (! File::exists($path) && ! Str::contains($path, ['*', '?'])) {
             throw new InvalidArgumentException("File [{$path}] does not exist.");
         }
 
