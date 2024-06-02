@@ -116,8 +116,8 @@ class SQLLoader
             }
 
             if (in_array($column, $booleans)) {
-                $default = $schemaColumns->where('name', $column)->first()['default'];
-                $columns[$key] = "{$escapedColumn} \"DECODE(:$column, '', $default, :$column)\"";
+                $default = trim((string) $schemaColumns->where('name', $column)->first()['default']);
+                $columns[$key] = "{$escapedColumn} \"DECODE(:{$column}, '', {$default}, :{$column})\"";
 
                 continue;
             }

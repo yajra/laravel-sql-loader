@@ -139,3 +139,21 @@ test('it can detect FILLER and DATE columns', function () {
     assertStringContainsString('"PHONE" FILLER', $controlFile);
     assertStringContainsString('"CREATED_AT" DATE', $controlFile);
 });
+
+test('it can detect BOOLEAN columns and set the default value if empty', function () {
+    Process::fake();
+
+    $loader = new SQLLoader();
+    $loader->inFile(__DIR__.'/../data/filler.dat')
+        ->as('users.ctl')
+        ->withHeaders()
+        ->into('users')
+        ->execute();
+
+    $controlFile = $loader->buildControlFile();
+    assertStringContainsString("\"NAME\",\n", $controlFile);
+    assertStringContainsString("\"EMAIL\",\n", $controlFile);
+    assertStringContainsString('"PHONE" FILLER', $controlFile);
+    assertStringContainsString('"CREATED_AT" DATE', $controlFile);
+    assertStringContainsString("\"IS_ACTIVE\" \"DECODE(:is_active, '', '1', :is_active)\"\n", $controlFile);
+});
