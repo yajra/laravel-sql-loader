@@ -21,14 +21,14 @@
         "illuminate/database": "^10.0|^11.0",
         "illuminate/support": "^10.0|^11.0",
         "illuminate/filesystem": "^10.0|^11.0",
-        "yajra/laravel-oci8": "^10.6|^11.0"
+        "yajra/laravel-oci8": "^10.6|^11.3"
     },
     "require-dev": {
-        "larastan/larastan": "^2.9.1",
-        "laravel/pint": "^1.14",
+        "larastan/larastan": "^2.9.7",
+        "laravel/pint": "^1.16",
         "mockery/mockery": "^1.6.12",
-        "orchestra/testbench": "^9.1.0",
-        "pestphp/pest": "^2.34",
+        "orchestra/testbench": "^9.1.1",
+        "pestphp/pest": "^2.34.7",
         "pestphp/pest-plugin-laravel": "*",
         "rector/rector": "^1.1"
     },
