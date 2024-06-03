@@ -30,6 +30,15 @@ abstract class TestCase extends BaseTestCase
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
+
+        Schema::dropIfExists('users_bool_no_default');
+        Schema::create('users_bool_no_default', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('email');
+            $table->boolean('is_active');
+            $table->timestamps();
+        });
     }
 
     protected function seedDatabase(): void
