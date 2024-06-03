@@ -6,16 +6,13 @@ use Illuminate\Support\Facades\Process;
 use Yajra\SQLLoader\SQLLoader;
 use Yajra\SQLLoader\TnsBuilder;
 
-use function PHPUnit\Framework\assertInstanceOf;
-use function PHPUnit\Framework\assertStringContainsString;
-
 test('it throws an error on invalid/non-existent file', function () {
     $loader = new SQLLoader(['skip=1', 'load=2']);
     $loader->inFile('file.dat');
 })->throws(InvalidArgumentException::class, 'File [file.dat] does not exist.');
 
 test('it can create an instance and build the command', function () {
-    assertInstanceOf(SQLLoader::class, SQLLoader::make());
+    expect(SQLLoader::make())->toBeInstanceOf(SQLLoader::class);
 
     $file = __DIR__.'/../data/users.dat';
 
@@ -24,22 +21,24 @@ test('it can create an instance and build the command', function () {
         ->as('users.ctl')
         ->into('users', ['id', 'name', 'email']);
 
-    assertInstanceOf(SQLLoader::class, $loader);
+    expect($loader)->toBeInstanceOf(SQLLoader::class);
 
     $controlFile = $loader->buildControlFile();
-    assertStringContainsString('OPTIONS(skip=1, load=2)', $controlFile);
-    assertStringContainsString("INFILE '{$file}'", $controlFile);
-    assertStringContainsString("BADFILE 'users.bad'", $controlFile);
-    assertStringContainsString("DISCARDFILE 'users.dis'", $controlFile);
-    assertStringContainsString('DISCARDMAX 1', $controlFile);
-    assertStringContainsString('APPEND', $controlFile);
-    assertStringContainsString('INTO TABLE users', $controlFile);
-    assertStringContainsString("FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'", $controlFile);
-    assertStringContainsString('(', $controlFile);
-    assertStringContainsString('  id,', $controlFile);
-    assertStringContainsString('  name,', $controlFile);
-    assertStringContainsString('  email', $controlFile);
-    assertStringContainsString(')', $controlFile);
+
+    expect($controlFile)->toBeString()
+        ->toContain('OPTIONS(skip=1, load=2)')
+        ->toContain("INFILE '{$file}'")
+        ->toContain("BADFILE 'users.bad'")
+        ->toContain("DISCARDFILE 'users.dis'")
+        ->toContain('DISCARDMAX 1')
+        ->toContain('APPEND')
+        ->toContain('INTO TABLE users')
+        ->toContain("FIELDS TERMINATED BY ',' OPTIONALLY ENCLOSED BY '\"'")
+        ->toContain('(')
+        ->toContain('  id,')
+        ->toContain('  name,')
+        ->toContain('  email')
+        ->toContain(')');
 });
 
 test('sqlldr process is invoked', function () {
@@ -134,10 +133,18 @@ test('it can detect FILLER and DATE columns', function () {
         ->execute();
 
     $controlFile = $loader->buildControlFile();
-    assertStringContainsString("\"NAME\",\n", $controlFile);
-    assertStringContainsString("\"EMAIL\",\n", $controlFile);
-    assertStringContainsString('"PHONE" FILLER', $controlFile);
-    assertStringContainsString('"CREATED_AT" DATE', $controlFile);
+
+    expect($controlFile)->toBeString()
+        ->toContain("INFILE '".__DIR__.'/../data/filler.dat')
+        ->toContain('INTO TABLE users')
+        ->toContain('FIELDS TERMINATED BY \',\' OPTIONALLY ENCLOSED BY \'"\'')
+        ->toContain('TRAILING NULLCOLS')
+        ->toContain('(')
+        ->toContain('"NAME",')
+        ->toContain('"EMAIL",')
+        ->toContain('"PHONE" FILLER', $controlFile)
+        ->toContain('"CREATED_AT" DATE')
+        ->toContain(')');
 });
 
 test('it can detect BOOLEAN columns and set the default value if empty', function () {
@@ -151,11 +158,13 @@ test('it can detect BOOLEAN columns and set the default value if empty', functio
         ->execute();
 
     $controlFile = $loader->buildControlFile();
-    assertStringContainsString("\"NAME\",\n", $controlFile);
-    assertStringContainsString("\"EMAIL\",\n", $controlFile);
-    assertStringContainsString('"PHONE" FILLER', $controlFile);
-    assertStringContainsString('"CREATED_AT" DATE', $controlFile);
-    assertStringContainsString("\"IS_ACTIVE\" \"DECODE(:is_active, '', '1', :is_active)\"", $controlFile);
+
+    expect($controlFile)->toBeString()
+        ->toContain('"NAME"')
+        ->toContain('"EMAIL"')
+        ->toContain('"PHONE" FILLER')
+        ->toContain('"CREATED_AT" DATE')
+        ->toContain('"IS_ACTIVE" "DECODE(:is_active, \'\', \'1\', :is_active)"');
 });
 
 test('it can detect BOOLEAN columns and set the default value to 0 if no default was defined', function () {
@@ -169,11 +178,13 @@ test('it can detect BOOLEAN columns and set the default value to 0 if no default
         ->execute();
 
     $controlFile = $loader->buildControlFile();
-    assertStringContainsString("\"NAME\",\n", $controlFile);
-    assertStringContainsString("\"EMAIL\",\n", $controlFile);
-    assertStringContainsString('"PHONE" FILLER', $controlFile);
-    assertStringContainsString('"CREATED_AT" DATE', $controlFile);
-    assertStringContainsString("\"IS_ACTIVE\" \"DECODE(:is_active, '', '0', :is_active)\"", $controlFile);
+
+    expect($controlFile)->toBeString()
+        ->toContain('"NAME"')
+        ->toContain('"EMAIL"')
+        ->toContain('"PHONE" FILLER')
+        ->toContain('"CREATED_AT" DATE')
+        ->toContain('"IS_ACTIVE" "DECODE(:is_active, \'\', \'0\', :is_active)"');
 });
 
 test('it accepts withHeader on input file with wildcard', function () {
@@ -188,12 +199,14 @@ test('it accepts withHeader on input file with wildcard', function () {
         ->execute();
 
     $controlFile = $loader->buildControlFile();
-    assertStringContainsString("INFILE '{$path}'", $controlFile);
-    assertStringContainsString('INTO TABLE users', $controlFile);
-    assertStringContainsString('FIELDS TERMINATED BY \',\' OPTIONALLY ENCLOSED BY \'"\'', $controlFile);
-    assertStringContainsString('TRAILING NULLCOLS', $controlFile);
-    assertStringContainsString('(', $controlFile);
-    assertStringContainsString('"NAME",', $controlFile);
-    assertStringContainsString('"EMAIL"', $controlFile);
-    assertStringContainsString(')', $controlFile);
+
+    expect($controlFile)->toBeString()
+        ->toContain("INFILE '{$path}'")
+        ->toContain('INTO TABLE users')
+        ->toContain('FIELDS TERMINATED BY \',\' OPTIONALLY ENCLOSED BY \'"\'')
+        ->toContain('TRAILING NULLCOLS')
+        ->toContain('(')
+        ->toContain('"NAME",')
+        ->toContain('"EMAIL"')
+        ->toContain(')');
 });
