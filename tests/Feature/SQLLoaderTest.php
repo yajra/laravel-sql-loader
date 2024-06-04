@@ -257,3 +257,26 @@ test('it can process constants columns', function () {
         ->toContain("updated_by CONSTANT 1,\n")
         ->toContain("updated_at EXPRESSION \"current_timestamp(3)\"\n");
 });
+
+test('it can set input file os file proc clause', function () {
+    Process::fake();
+
+    $loader = new SQLLoader();
+    $loader->inFile(__DIR__.'/../data/users.dat', osFileProcClause: 'os file proc')
+        ->as('users.ctl')
+        ->withHeaders()
+        ->into('users')
+        ->execute();
+
+    $controlFile = $loader->buildControlFile();
+
+    expect($controlFile)->toBeString()
+        ->toContain("INFILE '".__DIR__."/../data/users.dat' \"os file proc\"")
+        ->toContain('INTO TABLE users')
+        ->toContain('FIELDS TERMINATED BY \',\' OPTIONALLY ENCLOSED BY \'"\'')
+        ->toContain('TRAILING NULLCOLS')
+        ->toContain('(')
+        ->toContain('"NAME",')
+        ->toContain('"EMAIL"')
+        ->toContain(')');
+});
