@@ -429,13 +429,14 @@ class SQLLoader
         string $path,
         ?string $badFile = null,
         ?string $discardFile = null,
-        ?string $discardMax = null
+        ?string $discardMax = null,
+        ?string $osFileProcClause = null,
     ): static {
         if (! File::exists($path) && ! Str::contains($path, ['*', '?'])) {
             throw new InvalidArgumentException("File [{$path}] does not exist.");
         }
 
-        $this->inputFiles[] = new InputFile($path, $badFile, $discardFile, $discardMax);
+        $this->inputFiles[] = new InputFile($path, $badFile, $discardFile, $discardMax, $osFileProcClause);
 
         return $this;
     }
