@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [v1.7.0](https://github.com/yajra/laravel-sql-loader/compare/v1.6.2...v1.7.0) - 2024-06-04
+
+- feat: add support for constant columns when using withHeaders
+- test: date format
+- test: fix missing migration
+- chore: bump deps
+
 ## [v1.6.2](https://github.com/yajra/laravel-sql-loader/compare/v1.6.1...v1.6.2) - 2024-06-02
 
 - fix: default value for boolean
