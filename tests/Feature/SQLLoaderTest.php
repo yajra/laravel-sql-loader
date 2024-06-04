@@ -210,3 +210,23 @@ test('it accepts withHeader on input file with wildcard', function () {
         ->toContain('"EMAIL"')
         ->toContain(')');
 });
+
+test('it can set the default date format', function () {
+    Process::fake();
+
+    $loader = new SQLLoader();
+    $loader->inFile(__DIR__.'/../data/filler.dat')
+        ->as('users.ctl')
+        ->dateFormat('YYYY-MM-DD')
+        ->withHeaders()
+        ->into('users')
+        ->execute();
+
+    $controlFile = $loader->buildControlFile();
+
+    expect($controlFile)->toBeString()
+        ->toContain("DATE FORMAT 'YYYY-MM-DD'\n")
+        ->toContain("TIMESTAMP FORMAT 'YYYY-MM-DD'\n")
+        ->toContain("TIMESTAMP WITH TIME ZONE 'YYYY-MM-DD'\n")
+        ->toContain("TIMESTAMP WITH LOCAL TIME ZONE 'YYYY-MM-DD'\n");
+});
