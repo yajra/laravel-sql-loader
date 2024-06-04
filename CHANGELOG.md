@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [v1.7.1](https://github.com/yajra/laravel-sql-loader/compare/v1.7.0...v1.7.1) - 2024-06-04
+
+- fix: Fix osFileProcClause #3
+- fix: Sanitize headers #2
+- test: Add test for osFileProcClause
+- test: Add test for sanitize headers
+
 ## [v1.7.0](https://github.com/yajra/laravel-sql-loader/compare/v1.6.2...v1.7.0) - 2024-06-04
 
 - feat: add support for constant columns when using withHeaders
