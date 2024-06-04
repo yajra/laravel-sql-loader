@@ -55,3 +55,12 @@ test('it can insert data using array', function () {
         ->and($content)->toContain('3,"Jane, Doe",3'.PHP_EOL)
         ->and($content)->toContain('3,"Jane"" Doe",3'.PHP_EOL);
 });
+
+test('it can sanitize headers', function () {
+    $headers = CsvFile::make(__DIR__.'/../data/bad-header.dat', 'r')->getHeaders();
+    expect($headers)->toBe([
+        'NAME',
+        'EMAIL',
+        'PHONE',
+    ]);
+});
