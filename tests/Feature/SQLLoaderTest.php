@@ -230,3 +230,30 @@ test('it can set the default date format', function () {
         ->toContain("TIMESTAMP WITH TIME ZONE 'YYYY-MM-DD'\n")
         ->toContain("TIMESTAMP WITH LOCAL TIME ZONE 'YYYY-MM-DD'\n");
 });
+
+test('it can process constants columns', function () {
+    Process::fake();
+
+    $loader = new SQLLoader();
+    $loader->inFile(__DIR__.'/../data/users.dat')
+        ->as('users.ctl')
+        ->withHeaders()
+        ->constants([
+            'created_by CONSTANT 1',
+            'created_at EXPRESSION "current_timestamp(3)"',
+            'updated_by CONSTANT 1',
+            'updated_at EXPRESSION "current_timestamp(3)"',
+        ])
+        ->into('users')
+        ->execute();
+
+    $controlFile = $loader->buildControlFile();
+
+    expect($controlFile)->toBeString()
+        ->toContain("\"NAME\",\n")
+        ->toContain("\"EMAIL\",\n")
+        ->toContain("created_by CONSTANT 1,\n")
+        ->toContain("created_at EXPRESSION \"current_timestamp(3)\",\n")
+        ->toContain("updated_by CONSTANT 1,\n")
+        ->toContain("updated_at EXPRESSION \"current_timestamp(3)\"\n");
+});

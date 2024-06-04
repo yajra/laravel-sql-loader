@@ -32,6 +32,8 @@ class SQLLoader
 
     protected array $defaultColumns = [];
 
+    public array $constants = [];
+
     protected ?string $disk = null;
 
     protected ?string $logPath = null;
@@ -82,6 +84,8 @@ class SQLLoader
                 "TIMESTAMP WITH LOCAL TIME ZONE '".$this->dateFormat."'",
             ];
         }
+
+        $columns = array_merge($columns, $this->constants);
 
         $this->tables[] = new TableDefinition(
             $table, $columns, $terminatedBy, $enclosedBy, $trailing, $formatOptions, $when
@@ -467,6 +471,13 @@ class SQLLoader
     public function dateFormat(string $format): static
     {
         $this->dateFormat = $format;
+
+        return $this;
+    }
+
+    public function constants(array $constants): static
+    {
+        $this->constants = $constants;
 
         return $this;
     }

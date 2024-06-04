@@ -143,9 +143,10 @@ $loader->into('employees', ['name', 'dept_id']);
 Using `withHeaders` will skip the first row of the CSV file. 
 
 > **IMPORTANT** 
-> This method assumes that the headers are the same as the columns.
-> If the headers are different from the columns, you should define the `columns` in the `into` method.
-> This works well with the Eloquent Collection as the data source and saving it to a CSV file for bulk import.
+> 1. `withHeaders` must be called before the `into` method.
+> 2. This method assumes that the headers are the same as the columns. 
+> 3. If the headers are different from the columns, you should define the `columns` in the `into` method. 
+> 4. This works well with the Eloquent Collection as the data source and saving it to a CSV file for bulk import.
 
 #### Building a CSV File from Eloquent Collection
 
@@ -195,6 +196,23 @@ Jane Doe,2
 ```csv
 John Doe,1
 Jane Doe,2
+```
+
+### Constants
+
+In some cases, we need to insert constant values to the table. You can use the `constants` method to set the constant value.
+
+> **IMPORTANT**
+>`constants` must be called before the `into` method.
+
+```php
+$loader->withHeaders()
+    ->constants([
+        'file_id CONSTANT 1',
+        'created_at EXPRESSION "current_timestamp(3)"',
+        'updated_at EXPRESSION "current_timestamp(3)"',
+    ])
+    ->into('users');
 ```
 
 ### Connection
