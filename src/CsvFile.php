@@ -135,6 +135,7 @@ final class CsvFile
         if ($headers === false) {
             return [];
         }
+        $headers = array_map(fn ($header) => str_replace(["\r", "\n"], '', $header), $headers);
 
         return $headers;
     }
