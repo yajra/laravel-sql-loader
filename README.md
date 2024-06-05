@@ -144,9 +144,10 @@ Using `withHeaders` will skip the first row of the CSV file.
 
 > [!IMPORTANT] 
 > 1. `withHeaders` must be called before the `into` method.
-> 2. This method assumes that the headers are the same as the columns. Non existent columns will be set as FILLER.
-> 3. If the headers are different from the columns, you should define the `columns` in the `into` method. 
-> 4. This works well with the Eloquent Collection as the data source and saving it to a CSV file for bulk import.
+> 2. This method assumes that the headers are the same as the table columns. 
+> 3. Non-existent columns will be flagged as `FILLER`.
+> 4. Date headers will be automatically detected and data type is appended as `DATE`. values must follow the default date format. 
+> 5. If the headers are different from the table columns, you should define the `columns` in the `into` method. 
 
 #### Building a CSV File from Eloquent Collection
 
