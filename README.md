@@ -142,7 +142,7 @@ $loader->into('employees', ['name', 'dept_id']);
 
 Using `withHeaders` will skip the first row of the CSV file. 
 
-> [!CAUTION] 
+> [!IMPORTANT] 
 > 1. `withHeaders` must be called before the `into` method.
 > 2. This method assumes that the headers are the same as the columns. Non existent columns will be set as FILLER.
 > 3. If the headers are different from the columns, you should define the `columns` in the `into` method. 
@@ -202,7 +202,7 @@ Jane Doe,2
 
 In some cases, we need to insert constant values to the table. You can use the `constants` method to set the constant value.
 
-> [!CAUTION]
+> [!IMPORTANT]
 >`constants` must be called before the `into` method.
 
 ```php
