@@ -28,22 +28,7 @@ class TableDefinition implements Stringable
             $sql .= "WHEN {$this->when}".PHP_EOL;
         }
 
-        if ($this->csv) {
-            $sql .= 'FIELDS CSV '.($this->withEmbedded ? 'WITH' : 'WITHOUT').' EMBEDDED';
-        }
-
-        if ($this->terminatedBy) {
-            $sql .= ! str_contains($sql, 'FIELDS') ? 'FIELDS ' : ' ';
-            $sql .= "TERMINATED BY '{$this->terminatedBy}' ";
-        }
-
-        if ($this->enclosedBy) {
-            $sql .= "OPTIONALLY ENCLOSED BY '{$this->enclosedBy}'";
-        }
-
-        if ($this->csv || $this->terminatedBy || $this->enclosedBy) {
-            $sql .= PHP_EOL;
-        }
+        $sql .= $this->delimiterSpecification();
 
         if ($this->formatOptions) {
             $sql .= implode(PHP_EOL, $this->formatOptions).PHP_EOL;
@@ -63,5 +48,29 @@ class TableDefinition implements Stringable
         $sql .= ')'.PHP_EOL;
 
         return $sql;
+    }
+
+    private function delimiterSpecification(): string
+    {
+        $specs = ['FIELDS'];
+
+        if ($this->csv) {
+            $specs[] = 'CSV';
+            $specs[] = $this->withEmbedded ? 'WITH EMBEDDED' : 'WITHOUT EMBEDDED';
+        }
+
+        if ($this->terminatedBy) {
+            $specs[] = "TERMINATED BY '{$this->terminatedBy}'";
+        }
+
+        if ($this->enclosedBy) {
+            $specs[] = "OPTIONALLY ENCLOSED BY '{$this->enclosedBy}'";
+        }
+
+        if (count($specs) > 1) {
+            return implode(' ', $specs).PHP_EOL;
+        }
+
+        return '';
     }
 }

@@ -59,8 +59,8 @@ test('it can build it\'s own sql string without enclosed by', function () {
     );
 
     assertEquals(
-        "INTO TABLE users\nFIELDS TERMINATED BY ',' \n(\n  id,\n  name,\n  email\n)\n",
-        $table,
+        "INTO TABLE users\nFIELDS TERMINATED BY ','\n(\n  id,\n  name,\n  email\n)\n",
+        $table
     );
 });
 
