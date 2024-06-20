@@ -109,21 +109,21 @@ test('it can build with csv format', function () {
     );
 
     assertEquals(
-        "INTO TABLE users\nFIELDS CSV WITHOUT EMBEDDED\n(\n  id,\n  name,\n  email\n)\n",
-        $table
+        "INTO TABLE users\nFIELDS CSV WITH EMBEDDED\n(\n  id,\n  name,\n  email\n)\n",
+        $table->__toString()
     );
 });
 
-test('it can build with csv format with embedded', function () {
+test('it can build with csv format without embedded', function () {
     $table = new TableDefinition(
         'users',
         ['id', 'name', 'email'],
         csv: true,
-        withEmbedded: true,
+        withEmbedded: false,
     );
 
     assertEquals(
-        "INTO TABLE users\nFIELDS CSV WITH EMBEDDED\n(\n  id,\n  name,\n  email\n)\n",
+        "INTO TABLE users\nFIELDS CSV WITHOUT EMBEDDED\n(\n  id,\n  name,\n  email\n)\n",
         $table
     );
 });
