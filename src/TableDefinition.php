@@ -16,8 +16,9 @@ class TableDefinition implements Stringable
         public bool $trailing = false,
         public array $formatOptions = [],
         public ?string $when = null,
-    ) {
-    }
+        public bool $csv = false,
+        public bool $withEmbedded = false,
+    ) {}
 
     public function __toString(): string
     {
@@ -27,12 +28,21 @@ class TableDefinition implements Stringable
             $sql .= "WHEN {$this->when}".PHP_EOL;
         }
 
+        if ($this->csv) {
+            $sql .= 'FIELDS CSV '.($this->withEmbedded ? 'WITH' : 'WITHOUT').' EMBEDDED';
+        }
+
         if ($this->terminatedBy) {
-            $sql .= "FIELDS TERMINATED BY '{$this->terminatedBy}' ";
+            $sql .= ! str_contains($sql, 'FIELDS') ? 'FIELDS ' : ' ';
+            $sql .= "TERMINATED BY '{$this->terminatedBy}' ";
         }
 
         if ($this->enclosedBy) {
-            $sql .= "OPTIONALLY ENCLOSED BY '{$this->enclosedBy}'".PHP_EOL;
+            $sql .= "OPTIONALLY ENCLOSED BY '{$this->enclosedBy}'";
+        }
+
+        if ($this->csv || $this->terminatedBy || $this->enclosedBy) {
+            $sql .= PHP_EOL;
         }
 
         if ($this->formatOptions) {

@@ -11,9 +11,7 @@ final class CsvFile
     /**
      * @param  resource  $stream
      */
-    private function __construct(public string $file, public $stream)
-    {
-    }
+    private function __construct(public string $file, public $stream) {}
 
     /**
      * A list of possible modes. The default is 'w' (open for writing).:
