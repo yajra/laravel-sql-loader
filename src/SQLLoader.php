@@ -70,7 +70,7 @@ class SQLLoader
         array $formatOptions = [],
         ?string $when = null,
         bool $csv = false,
-        bool $withEmbedded = false,
+        bool $withEmbedded = true,
     ): static {
         if (! $columns && $this->defaultColumns) {
             $columns = $this->createColumnsFromHeaders($table, $this->defaultColumns);

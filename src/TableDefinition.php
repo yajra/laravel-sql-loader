@@ -17,7 +17,7 @@ class TableDefinition implements Stringable
         public array $formatOptions = [],
         public ?string $when = null,
         public bool $csv = false,
-        public bool $withEmbedded = false,
+        public bool $withEmbedded = true,
     ) {}
 
     public function __toString(): string
