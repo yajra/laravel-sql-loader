@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [v1.8.0](https://github.com/yajra/laravel-sql-loader/compare/v1.7.1...v1.8.0) - 2024-06-20
+
+- feat: add support for CSV Format Files #4
+
 ## [v1.7.1](https://github.com/yajra/laravel-sql-loader/compare/v1.7.0...v1.7.1) - 2024-06-04
 
 - fix: Fix osFileProcClause #3
