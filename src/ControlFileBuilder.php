@@ -11,9 +11,7 @@ use Stringable;
 
 class ControlFileBuilder implements Stringable
 {
-    public function __construct(public SQLLoader $loader)
-    {
-    }
+    public function __construct(public SQLLoader $loader) {}
 
     public function __toString(): string
     {

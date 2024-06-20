@@ -59,7 +59,7 @@ test('it can build it\'s own sql string without enclosed by', function () {
     );
 
     assertEquals(
-        "INTO TABLE users\nFIELDS TERMINATED BY ',' (\n  id,\n  name,\n  email\n)\n",
+        "INTO TABLE users\nFIELDS TERMINATED BY ','\n(\n  id,\n  name,\n  email\n)\n",
         $table
     );
 });
@@ -97,6 +97,33 @@ test('it can build with when clause', function () {
 
     assertEquals(
         "INTO TABLE users\nWHEN id > 0\n(\n  id,\n  name,\n  email\n)\n",
+        $table
+    );
+});
+
+test('it can build with csv format', function () {
+    $table = new TableDefinition(
+        'users',
+        ['id', 'name', 'email'],
+        csv: true,
+    );
+
+    assertEquals(
+        "INTO TABLE users\nFIELDS CSV WITH EMBEDDED\n(\n  id,\n  name,\n  email\n)\n",
+        $table->__toString()
+    );
+});
+
+test('it can build with csv format without embedded', function () {
+    $table = new TableDefinition(
+        'users',
+        ['id', 'name', 'email'],
+        csv: true,
+        withEmbedded: false,
+    );
+
+    assertEquals(
+        "INTO TABLE users\nFIELDS CSV WITHOUT EMBEDDED\n(\n  id,\n  name,\n  email\n)\n",
         $table
     );
 });

@@ -16,8 +16,9 @@ class TableDefinition implements Stringable
         public bool $trailing = false,
         public array $formatOptions = [],
         public ?string $when = null,
-    ) {
-    }
+        public bool $csv = false,
+        public bool $withEmbedded = true,
+    ) {}
 
     public function __toString(): string
     {
@@ -27,13 +28,7 @@ class TableDefinition implements Stringable
             $sql .= "WHEN {$this->when}".PHP_EOL;
         }
 
-        if ($this->terminatedBy) {
-            $sql .= "FIELDS TERMINATED BY '{$this->terminatedBy}' ";
-        }
-
-        if ($this->enclosedBy) {
-            $sql .= "OPTIONALLY ENCLOSED BY '{$this->enclosedBy}'".PHP_EOL;
-        }
+        $sql .= $this->delimiterSpecification();
 
         if ($this->formatOptions) {
             $sql .= implode(PHP_EOL, $this->formatOptions).PHP_EOL;
@@ -53,5 +48,29 @@ class TableDefinition implements Stringable
         $sql .= ')'.PHP_EOL;
 
         return $sql;
+    }
+
+    private function delimiterSpecification(): string
+    {
+        $specs = ['FIELDS'];
+
+        if ($this->csv) {
+            $specs[] = 'CSV';
+            $specs[] = $this->withEmbedded ? 'WITH EMBEDDED' : 'WITHOUT EMBEDDED';
+        }
+
+        if ($this->terminatedBy) {
+            $specs[] = "TERMINATED BY '{$this->terminatedBy}'";
+        }
+
+        if ($this->enclosedBy) {
+            $specs[] = "OPTIONALLY ENCLOSED BY '{$this->enclosedBy}'";
+        }
+
+        if (count($specs) > 1) {
+            return implode(' ', $specs).PHP_EOL;
+        }
+
+        return '';
     }
 }

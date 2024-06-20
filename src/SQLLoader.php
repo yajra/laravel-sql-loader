@@ -46,9 +46,7 @@ class SQLLoader
 
     protected string $dateFormat = 'YYYY-MM-DD"T"HH24:MI:SS."000000Z"';
 
-    public function __construct(public array $options = [])
-    {
-    }
+    public function __construct(public array $options = []) {}
 
     /**
      * Define mode to use.
@@ -71,6 +69,8 @@ class SQLLoader
         bool $trailing = true,
         array $formatOptions = [],
         ?string $when = null,
+        bool $csv = false,
+        bool $withEmbedded = true,
     ): static {
         if (! $columns && $this->defaultColumns) {
             $columns = $this->createColumnsFromHeaders($table, $this->defaultColumns);
@@ -88,7 +88,7 @@ class SQLLoader
         $columns = array_merge($columns, $this->constants);
 
         $this->tables[] = new TableDefinition(
-            $table, $columns, $terminatedBy, $enclosedBy, $trailing, $formatOptions, $when
+            $table, $columns, $terminatedBy, $enclosedBy, $trailing, $formatOptions, $when, $csv, $withEmbedded
         );
 
         return $this;
