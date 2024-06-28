@@ -14,7 +14,7 @@
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Yajra\SQLLoader\Tests\TestCase;
 
-uses(TestCase::class, RefreshDatabase::class)->in('Feature');
+uses(TestCase::class, RefreshDatabase::class)->in('Feature', 'Integration');
 
 /*
 |--------------------------------------------------------------------------
