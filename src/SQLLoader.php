@@ -6,6 +6,7 @@ namespace Yajra\SQLLoader;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\Process\ProcessResult;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Schema;
@@ -86,6 +87,8 @@ class SQLLoader
         }
 
         $columns = array_merge($columns, $this->constants);
+
+        $table = DB::connection($this->getConnection())->getQueryGrammar()->wrapTable($table);
 
         $this->tables[] = new TableDefinition(
             $table, $columns, $terminatedBy, $enclosedBy, $trailing, $formatOptions, $when, $csv, $withEmbedded
