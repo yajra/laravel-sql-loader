@@ -2,6 +2,12 @@
 
 ## [Unreleased]
 
+## [v1.8.1](https://github.com/yajra/laravel-sql-loader/compare/v1.8.0...v1.8.1) - 2024-06-28
+
+- fix: get column connection and table prefix #5
+- Fix issue when connection uses table prefix 
+- Fix issue where custom connection is not used when fetching the table columns
+
 ## [v1.8.0](https://github.com/yajra/laravel-sql-loader/compare/v1.7.1...v1.8.0) - 2024-06-20
 
 - feat: add support for CSV Format Files #4
