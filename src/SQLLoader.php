@@ -100,7 +100,7 @@ class SQLLoader
     public function createColumnsFromHeaders(string $table, array $columns): array
     {
         $columns = array_map('strtolower', $columns);
-        $schemaColumns = collect(Schema::connection(config('sql-loader.connection'))->getColumns($table));
+        $schemaColumns = collect(Schema::connection($this->getConnection())->getColumns($table));
 
         $dates = $schemaColumns->filter(fn ($column) => in_array($column['type'], [
             'date',
