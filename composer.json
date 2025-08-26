@@ -28,7 +28,7 @@
         "laravel/pint": "^1.16",
         "mockery/mockery": "^1.6.12",
         "orchestra/testbench": "^9.1.1",
-        "pestphp/pest": "^3.0.1",
+        "pestphp/pest": "^4.0.3",
         "pestphp/pest-plugin-laravel": "*",
         "rector/rector": "^1.1"
     },
