@@ -126,7 +126,7 @@ describe('SQL Loader', function () {
     test('it can detect FILLER and DATE columns', function () {
         Process::fake();
 
-        $loader = new SQLLoader();
+        $loader = new SQLLoader;
         $loader->inFile(__DIR__.'/../data/filler.dat')
             ->as('users.ctl')
             ->withHeaders()
@@ -151,7 +151,7 @@ describe('SQL Loader', function () {
     test('it can detect BOOLEAN columns and set the default value if empty', function () {
         Process::fake();
 
-        $loader = new SQLLoader();
+        $loader = new SQLLoader;
         $loader->inFile(__DIR__.'/../data/filler.dat')
             ->as('users.ctl')
             ->withHeaders()
@@ -171,7 +171,7 @@ describe('SQL Loader', function () {
     test('it can detect BOOLEAN columns and set the default value to 0 if no default was defined', function () {
         Process::fake();
 
-        $loader = new SQLLoader();
+        $loader = new SQLLoader;
         $loader->inFile(__DIR__.'/../data/filler.dat')
             ->as('users.ctl')
             ->withHeaders()
@@ -191,7 +191,7 @@ describe('SQL Loader', function () {
     test('it accepts withHeader on input file with wildcard', function () {
         Process::fake();
 
-        $loader = new SQLLoader();
+        $loader = new SQLLoader;
         $path = __DIR__.'/../data/wildcard/*.dat';
         $loader->inFile($path)
             ->as('users.ctl')
@@ -215,7 +215,7 @@ describe('SQL Loader', function () {
     test('it can set the default date format', function () {
         Process::fake();
 
-        $loader = new SQLLoader();
+        $loader = new SQLLoader;
         $loader->inFile(__DIR__.'/../data/filler.dat')
             ->as('users.ctl')
             ->dateFormat('YYYY-MM-DD')
@@ -235,7 +235,7 @@ describe('SQL Loader', function () {
     test('it can process constants columns', function () {
         Process::fake();
 
-        $loader = new SQLLoader();
+        $loader = new SQLLoader;
         $loader->inFile(__DIR__.'/../data/users.dat')
             ->as('users.ctl')
             ->withHeaders()
@@ -262,7 +262,7 @@ describe('SQL Loader', function () {
     test('it can set input file os file proc clause', function () {
         Process::fake();
 
-        $loader = new SQLLoader();
+        $loader = new SQLLoader;
         $loader->inFile(__DIR__.'/../data/users.dat', osFileProcClause: 'os file proc')
             ->as('users.ctl')
             ->withHeaders()
