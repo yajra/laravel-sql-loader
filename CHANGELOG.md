@@ -1,3 +1,17 @@
+# [1.9.0](https://github.com/yajra/laravel-sql-loader/compare/v1.8.1...v1.9.0) (2026-02-03)
+
+
+### Bug Fixes
+
+* **cs:** [ci-review] pint :bug: ([688dc6b](https://github.com/yajra/laravel-sql-loader/commit/688dc6bd247253666d270a059d5ba71b0997219d))
+* make OCI8 installation script support all PHP versions ([f2cc59c](https://github.com/yajra/laravel-sql-loader/commit/f2cc59c724523b14e2106192a0af001570574e46))
+
+
+### Features
+
+* Laravel 12 ([8319ed7](https://github.com/yajra/laravel-sql-loader/commit/8319ed7d9cad9152a993d0d6cefc16eb3d58ae82))
+* update orchestra/testbench to support Laravel 12 ([783ebf6](https://github.com/yajra/laravel-sql-loader/commit/783ebf6ba83c135bdff752ad79b3f5deae40a847))
+
 # Laravel-SQL-Loader CHANGELOG
 
 ## [Unreleased]
