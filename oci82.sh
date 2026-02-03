@@ -25,4 +25,5 @@ sudo sh -c "echo '/opt/oracle/instantclient' >> /etc/ld.so.conf"
 sudo ldconfig
 
 # enable oci8 extension
-sudo sh -c "echo 'extension=oci8.so' >> /etc/php/8.2/cli/php.ini"
+PHP_VERSION=$(php -r "echo PHP_MAJOR_VERSION . '.' . PHP_MINOR_VERSION;")
+sudo sh -c "echo 'extension=oci8.so' >> /etc/php/${PHP_VERSION}/cli/php.ini"
