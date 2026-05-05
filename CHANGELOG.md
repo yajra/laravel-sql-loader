@@ -1,3 +1,15 @@
+# [1.10.0](https://github.com/yajra/laravel-sql-loader/compare/v1.9.0...v1.10.0) (2026-05-05)
+
+
+### Bug Fixes
+
+* **cs:** [ci-review] pint :bug: ([c5f1263](https://github.com/yajra/laravel-sql-loader/commit/c5f12638904b6994fa1aa7d9b87bf4084c6a1a3f))
+
+
+### Features
+
+* add CHARACTERSET support to SQLLoader control file ([be02e27](https://github.com/yajra/laravel-sql-loader/commit/be02e272f35dd53fc43d27ebcf59300fa77fec74))
+
 # [1.9.0](https://github.com/yajra/laravel-sql-loader/compare/v1.8.1...v1.9.0) (2026-02-03)
 
 
