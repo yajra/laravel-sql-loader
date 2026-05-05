@@ -35,6 +35,8 @@ class SQLLoader
 
     public array $constants = [];
 
+    public ?string $characterset = null;
+
     protected ?string $disk = null;
 
     protected ?string $logPath = null;
@@ -468,6 +470,13 @@ class SQLLoader
     public function options(array $options): static
     {
         $this->options = $options;
+
+        return $this;
+    }
+
+    public function characterset(string $characterset): static
+    {
+        $this->characterset = $characterset;
 
         return $this;
     }

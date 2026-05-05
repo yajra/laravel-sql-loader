@@ -18,4 +18,11 @@ return [
      * ------------------------------------------------------
      */
     'disk' => env('SQL_LOADER_DISK', 'local'),
+
+    /* ------------------------------------------------------
+     * Character set for the control file.
+     * Set to null to omit the CHARACTERSET definition.
+     * ------------------------------------------------------
+     */
+    'characterset' => env('SQL_LOADER_CHARACTERSET', 'AL32UTF8'),
 ];

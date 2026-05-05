@@ -24,6 +24,7 @@ class ControlFileBuilder implements Stringable
 
         $sql = Str::of($template)
             ->replace('$OPTIONS', $this->options())
+            ->replace('$CHARACTERSET', $this->characterset())
             ->replace('$FILES', $this->inputFiles())
             ->replace('$METHOD', $this->method())
             ->replace('$INSERTS', $this->inserts())
@@ -46,6 +47,17 @@ class ControlFileBuilder implements Stringable
     protected function options(): string
     {
         return implode(', ', $this->loader->options);
+    }
+
+    protected function characterset(): string
+    {
+        $charset = $this->loader->characterset ?? config('sql-loader.characterset');
+
+        if (! $charset) {
+            return '';
+        }
+
+        return 'CHARACTERSET '.$charset;
     }
 
     protected function inputFiles(): string

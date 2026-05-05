@@ -217,6 +217,18 @@ $loader->withHeaders()
     ->into('users');
 ```
 
+### Character Set
+
+You can set the character set used to interpret the data file using the `characterset` method.
+This adds a `CHARACTERSET` clause to the generated control file, which is useful when loading multi-byte or UTF-8 data.
+
+```php
+$loader->characterset('AL32UTF8');
+```
+
+If not set explicitly, the value falls back to the `sql-loader.characterset` config key (default: `AL32UTF8`).
+Set the config key to `null` (or pass an empty string) to omit the `CHARACTERSET` clause entirely.
+
 ### Connection
 
 You can set the connection name to use for the SQL*Loader command using the `connection` method.
@@ -331,6 +343,15 @@ You can set the disk to use for the control file.
 
 ```php
 'disk' => env('SQL_LOADER_DISK', 'local'),
+```
+
+### Character Set Config
+
+You can set the character set used to interpret the data file.
+Set to `null` to omit the `CHARACTERSET` clause from the control file.
+
+```php
+'characterset' => env('SQL_LOADER_CHARACTERSET', 'AL32UTF8'),
 ```
 
 ## Credits
